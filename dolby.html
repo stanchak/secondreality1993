@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>In Dolby Surround — Second Reality</title>
+<meta name="robots" content="noindex"><link rel="stylesheet" href="bbs.css"></head>
+<body><div class="crt"><div class="body">
+
+<p class="yel">IN DOLBY SURROUND</p>
+
+<p>The third title card says “in”, and then two glyphs: the Dolby double-D, which
+was already sitting in the demo’s own font. It reads as a joke. It was also
+true.</p>
+
+<pre class="dim">  “If you have a DOLBY SURROUND decoder/amplifier hooked up to your
+   hi-fi set, have it on-line while running this demo and you will get
+   some cool surround sound effects.
+   <span class="wht">(Surprisingly, does not work with the normal Sound Blaster).</span>”
+                                                  — README.1ST, 1993</pre>
+
+<p>The advertisement that shipped inside the ZIP put it in fewer words. This is
+FILE_ID.DIZ, the block a BBS pasted into its file listing:</p>
+
+<pre class="blu">   ▀▀▀▀█ ██▀▀█ ██▀▀▄                  1/2
+── ██▀▀▀ ███ █ ███ █ ──R─E─A─L─I─T─Y──▄
+▀▀ ███ ▄ ▀▀▀   ▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+sp ███▄█  <span class="wht">b y   F u t u r e   C r e w</span>
+<span class="cyn">┌───────────────────────────────────────┐
+│  ■ The winning demo of Assembly'93 ■  │
+│     · SB, SB Pro and GUS support ·    │
+└───────────────────────────────────────┘</span>
+ <span class="yel">In ◄◄ DOLBY SURROUND ►► Where Available</span></pre>
+
+<p class="dim">Two ZIPs, 2NDREAL1 and 2NDREAL2, with a copy of that in each — the
+“1/2” in the corner is so a board’s listing said which half you had.</p>
+
+<div class="menu" id="m"></div>
+</div></div>
+<script type="module">
+import { chrome, menu, setStatus } from './bbs.js';
+document.getElementById('m').innerHTML = menu([
+  { key: 'D', file: 'starport.html', title: 'The board it came from', desc: 'StarPort, Espoo' },
+]);
+chrome({ title: 'In Dolby Surround' });
+setStatus('MAIN/DISTR/FILE_ID.1');
+</script></body></html>

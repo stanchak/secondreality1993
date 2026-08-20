@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>Timing in Second Reality</title>
+<meta name="description" content="How Second Reality slaves every part to the music's own position, the way the 1993 interrupt server did.">
+<link rel="canonical" href="https://www.secondreality1993.com/tech-timing.html">
+<meta property="og:title" content="Timing in Second Reality">
+<meta property="og:description" content="How Second Reality slaves every part to the music's own position, the way the 1993 interrupt server did.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.secondreality1993.com/tech-timing.html">
+<meta property="og:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY.">
+<meta property="og:site_name" content="Second Reality">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Timing in Second Reality">
+<meta name="twitter:description" content="How Second Reality slaves every part to the music's own position, the way the 1993 interrupt server did.">
+<meta name="twitter:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta name="twitter:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY."><link rel="stylesheet" href="bbs.css"></head>
+<body><div class="crt"><div class="body">
+
+<p class="yel">TIMING COMES FROM THE MUSIC</p>
+
+<p>Parts do not wait for a number of frames. They ask the music where it is,
+through a resident interrupt server on <span class="cyn">int 0FCh</span>:</p>
+
+<pre>  <span class="grn">dis_sync()</span>       which section of the song we have reached
+  <span class="grn">dis_musrow()</span>     the row playing in the current pattern
+  <span class="grn">dis_musplus()</span>    signed distance to the nearest sync marker
+  <span class="grn">dis_getmframe()</span>  a counter fed by the same interrupt chain</pre>
+
+<p>The <span class="mag">+++</span> entries in the order list are ordinary Scream
+Tracker “skip this order” markers (order byte 254) that Future Crew repurposed as
+beacons. <span class="cyn">dis_musplus()</span> returns a signed distance to one,
+so a part can say “wait until fifteen rows before the next marker” and land on a
+musical moment exactly.</p>
+
+<p>The port models each of these against the real S3M, so a gate fires at the same
+musical position it did in 1993 — and where a live position is available from the
+audio engine, it uses that in preference to any simulation.</p>
+
+<p class="dim">One caveat worth stating: dis_getmframe() is fed by an interrupt,
+and under heavy per-pixel load the handler misses ticks, so it runs slower than
+the vertical refresh. Parts that gate on it are calibrated to its real rate rather
+than to a nominal 70 Hz.</p>
+
+<div class="menu" id="m"></div>
+</div></div>
+<script type="module">
+import { chrome, menu } from './bbs.js';
+document.getElementById('m').innerHTML = menu([
+  { key: 'C', file: 'tech-vga.html', title: 'Reproducing VGA', desc: 'next topic' },
+]);
+chrome({ title: 'Timing' });
+</script></body></html>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>Hidden screens — Second Reality</title>
+<meta name="robots" content="noindex"><link rel="stylesheet" href="bbs.css"></head>
+<body><div class="crt"><div class="body">
+
+<p class="yel">HIDDEN SCREENS</p>
+
+<p>Seven screens that are on no menu. Press <span class="cyn">/</span>, type the
+word, press ENTER — or just pick one here.</p>
+
+<div class="menu" id="m"></div>
+
+<p>Aliases work and so does any unique abbreviation, which is most of them:
+<span class="cyn">/ddstars</span>, <span class="cyn">/386</span>,
+<span class="cyn">/surround</span>, <span class="cyn">/mail</span>,
+<span class="cyn">/pxl</span>, <span class="cyn">/stats</span>,
+<span class="cyn">/logoff</span>. TAB completes whatever you have started.</p>
+
+<p class="dim">The demo has a hidden part of its own, which is what the first one
+is about. It is the only entry here that is a genuine 1993 secret rather than a
+1993 detail worth a screen.</p>
+
+</div></div>
+<script type="module">
+import { chrome, menu } from './bbs.js';
+document.getElementById('m').innerHTML = menu([
+  { key: 'A', file: 'hidden-part.html', title: '/u',        desc: 'the part of the demo that never runs' },
+  { key: 'B', file: 'hw.html',          title: '/hw',       desc: 'what it wanted from your PC, in 1993' },
+  { key: 'C', file: 'dolby.html',       title: '/dolby',    desc: 'in DOLBY SURROUND where available' },
+  { key: 'D', file: 'starport.html',    title: '/starport', desc: 'the BBS the demo told you to call' },
+  { key: 'E', file: 'pixel.html',       title: '/pixel',    desc: 'PART PIC MISSING (PXL SUX)' },
+  { key: 'F', file: 'sysop.html',       title: '/sysop',    desc: 'system information' },
+  { key: 'G', file: 'bye.html',         title: '/bye',      desc: 'log off' },
+]);
+chrome({ title: 'Hidden screens' });
+</script></body></html>

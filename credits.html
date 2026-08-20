@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>Credits — Second Reality</title>
+<meta name="description" content="Who made Second Reality in 1993, and who ported it to the browser.">
+<link rel="canonical" href="https://www.secondreality1993.com/credits.html">
+<meta property="og:title" content="Credits — Second Reality">
+<meta property="og:description" content="Who made Second Reality in 1993, and who ported it to the browser.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.secondreality1993.com/credits.html">
+<meta property="og:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY.">
+<meta property="og:site_name" content="Second Reality">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Credits — Second Reality">
+<meta name="twitter:description" content="Who made Second Reality in 1993, and who ported it to the browser.">
+<meta name="twitter:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta name="twitter:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY."><link rel="stylesheet" href="bbs.css"></head>
+<body><div class="crt"><div class="body">
+
+<p class="yel">CREDITS</p>
+
+<p class="grn">THE DEMO, 1993</p>
+<p>Second Reality is <b>Future Crew</b>'s. Code by Psi, Trug and Wildfire; music by
+Purple Motion and Skaven; graphics by Pixel and Marvel. See [2] for the full
+line-up. They released all of it into the public domain in 2013, which is the only
+reason this port can exist.</p>
+
+<p class="grn">THIS PORT, 2026</p>
+<pre>  <span class="cyn">Put together by</span>   Chris Stanchak
+                    <a href="https://x.com/chrisstanchak">@chrisstanchak</a> <span class="dim">on X</span> ·
+                    <a href="https://github.com/stanchak">stanchak</a> <span class="dim">on GitHub</span>
+                    <span class="dim">LLM human guide</span>
+
+  <span class="cyn">Written by</span>        Claude Opus 5 (1M context) — Anthropic
+                    Claude Fable 5 — Anthropic
+
+  <span class="cyn">Dirty Work</span>        Grok 4.6 — xAI</pre>
+
+<p>The port was built by directing large language models against the original
+source: reading the 1993 C, assembly and Pascal, deriving each part's timing from
+the code that produced it, and verifying the result against a test suite rather
+than against screenshots. The human role was direction, judgement and calling out
+what looked wrong — which is most of what made it come out right.</p>
+
+<p class="dim">The models are credited because they did the work. Everything they
+produced is public domain along with the rest — see [L].</p>
+
+<div class="menu" id="m"></div>
+</div></div>
+<script type="module">
+import { chrome, menu } from './bbs.js';
+document.getElementById('m').innerHTML = menu([
+  { key: 'L', file: 'license.html', title: 'Licence', desc: 'public domain' },
+]);
+chrome({ title: 'Credits' });
+</script></body></html>

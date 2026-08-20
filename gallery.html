@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>Second Reality artwork — from the 1993 release</title>
+<meta name="description" content="Title painting, panorama, forest and credits art from Second Reality, rendered from Future Crew's original data files.">
+<link rel="canonical" href="https://www.secondreality1993.com/gallery.html">
+<meta property="og:title" content="Second Reality artwork — from the 1993 release">
+<meta property="og:description" content="Title painting, panorama, forest and credits art from Second Reality, rendered from Future Crew's original data files.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.secondreality1993.com/gallery.html">
+<meta property="og:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY.">
+<meta property="og:site_name" content="Second Reality">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Second Reality artwork — from the 1993 release">
+<meta name="twitter:description" content="Title painting, panorama, forest and credits art from Second Reality, rendered from Future Crew's original data files.">
+<meta name="twitter:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta name="twitter:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY."><link rel="stylesheet" href="bbs.css"></head>
+<body><div class="crt"><div class="body">
+
+<h1 class="yel">GALLERY <span class="dim">— rendered straight from the release’s data files</span></h1>
+
+<div id="frame" style="text-align:center"></div>
+
+<div class="menu" id="m"></div>
+</div></div>
+<script type="module">
+import { chrome, menu } from './bbs.js';
+
+const ART = [
+  ['title',     'BEG — the title painting, faded in from white'],
+  ['troll',     'TECHNO — the endcard, held while the next part loads'],
+  ['panorama',  'ALKU — the opening panorama, scrolled across a 704px canvas'],
+  ['forest',    'MNTSCRL — recovered from a linked object file'],
+  ['cred-ship', 'CRED — recovered from the shipped executable'],
+  ['cred-city', 'CRED — the dev tree had an unfinished render here'],
+];
+let i = 0;
+const frame = document.getElementById('frame');
+function show() {
+  const [f, cap] = ART[i];
+  frame.innerHTML =
+    `<img class="art" src="img/art/${f}.png" alt="${cap}" style="max-width:100%;max-height:60vh">` +
+    `<p class="dim">${i + 1}/${ART.length} — ${cap}</p>`;
+}
+document.getElementById('m').innerHTML = menu([
+  { key: 'N', file: '#', title: 'Next picture', desc: 'or press → ' },
+  { key: 'P', file: '#', title: 'Previous',     desc: 'or press ←' },
+]);
+show();
+// N/P and the arrows belong to the picture here, not to the board — without
+// reserving them the board would also fire the menu row and advance twice.
+chrome({ title: 'Gallery', reserve: ['n', 'p', 'ArrowLeft', 'ArrowRight'] });
+addEventListener('keydown', e => {
+  if (e.key === 'n' || e.key === 'N' || e.key === 'ArrowRight') { i = (i + 1) % ART.length; show(); }
+  if (e.key === 'p' || e.key === 'P' || e.key === 'ArrowLeft')  { i = (i + ART.length - 1) % ART.length; show(); }
+});
+document.querySelectorAll('.menu a').forEach(a => a.addEventListener('click', e => {
+  e.preventDefault();
+  i = (a.dataset.key === 'N' ? i + 1 : i + ART.length - 1) % ART.length; show();
+}));
+</script></body></html>

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>How the hidden part works — Second Reality</title>
+<meta name="robots" content="noindex"><link rel="stylesheet" href="bbs.css"></head>
+<body><div class="crt"><div class="body">
+
+<p class="yel">HOW THE HIDDEN PART WORKS</p>
+
+<p class="grn">A DENSE SKY OUT OF 512 STARS</p>
+<p>512 stars are projected into a 320×100 bitmap and <b>ORed into a ring of 64
+buffers</b> — half a megabyte of EMS, one page at a time. Nothing clears them, so
+each buffer keeps every 64th frame it is handed: a few hundred stars become a
+dense sky, and cycling the ring makes it shimmer. With no decay it thickens for as
+long as you watch. The screen shows the current
+buffer up top and <span class="cyn">the buffer from 32 frames ago, mirrored</span>,
+below — the bottom of the screen is the top of the starfield, half a second late.</p>
+
+<p class="grn">TWO IMAGES INTERLEAVED</p>
+<p>The mode is 320×400 in 16 colours — mode 0Dh with CRTC 9’s scan doubling
+switched off — and every blit steps <b>two rows at a time</b>. Stars take the 200
+even rows, the text the odd ones. Interleaving rather than overlapping is why the
+star blits’ text-band clipping is commented out in the shipped build and the text
+survives anyway — and it is where the text gets its translucency: a black bar with
+starfield showing through every other line.</p>
+
+<p>The loader starts MUSIC0 at <b>order 70</b> for it — eight patterns fenced off
+by 255 end-markers, reached from nowhere else. Past that there is no music sync at
+all: no dis_sync, no musplus. The timeline is a frame counter at 70 Hz, ending
+when you stop watching, because dis_exit was a keypress.</p>
+
+<div class="menu" id="m"></div>
+</div></div>
+<script type="module">
+import { chrome, menu, setStatus } from './bbs.js';
+document.getElementById('m').innerHTML = menu([
+  { key: 'R', file: '?part=hidden', title: 'Run it', desc: 'and read the message' },
+]);
+chrome({ title: 'How it works' });
+setStatus('512 STARS · 64 BUFFERS · ORDER 70');
+</script></body></html>

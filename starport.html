@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>StarPort — Second Reality</title>
+<meta name="robots" content="noindex"><link rel="stylesheet" href="bbs.css"></head>
+<body><div class="crt"><div class="body">
+
+<p class="yel">STARPORT</p>
+
+<p>The demo printed this on its way out. It is <span class="cyn">MAIN/ENDANSI</span>,
+seventeen lines of text mode, and it is the reason a board is the right shape for
+a site about this demo:</p>
+
+<pre>  <span class="grn">Mail:</span>                       <span class="grn">BBS:</span>
+  Abyss / Future Crew           <span class="wht">StarPort</span>
+  Espoo, Finland                +358-0-804-4626  <span class="dim">V32Bis HST</span>
+                                +358-0-804-1133  <span class="dim">V32Bis</span>
+  <span class="grn">Fax:</span>                        CDN 94:61/0
+  +358-0-420-8620 / GORE        Fidonet 2:220/630</pre>
+
+<p>Two lines, so two callers at once, at V.32bis — 14,400 bits a second, with one
+of them also speaking USR’s HST. A FidoNet node number and a CDN one, because the
+way a file crossed Europe was store-and-forward between hobbyist machines
+overnight.</p>
+
+<p>To get Second Reality in 1993 you dialled somebody’s house in Espoo, or you
+waited for it to reach a board nearer you. It is 2.33 MB. At 14,400 that is
+around twenty-five minutes, and you were paying for the call.</p>
+
+<p class="dim">The release also carries a street address. It is not reproduced
+here.</p>
+
+<div class="menu" id="m"></div>
+</div></div>
+<script type="module">
+import { chrome, menu, setStatus } from './bbs.js';
+document.getElementById('m').innerHTML = menu([
+  { key: 'F', file: 'tech-size.html', title: 'How big it was', desc: 'two files, 2,443,265 bytes' },
+]);
+chrome({ title: 'StarPort' });
+setStatus('2 LINES · 14400 BAUD · ESPOO');
+</script></body></html>

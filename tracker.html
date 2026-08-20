@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>Play the Second Reality music — Scream Tracker</title>
+<meta name="description" content="Hear Second Reality's original S3M modules in a Scream Tracker 3-style player. Music by Purple Motion.">
+<link rel="canonical" href="https://www.secondreality1993.com/tracker.html">
+<meta property="og:title" content="Play the Second Reality music — Scream Tracker">
+<meta property="og:description" content="Hear Second Reality's original S3M modules in a Scream Tracker 3-style player. Music by Purple Motion.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.secondreality1993.com/tracker.html">
+<meta property="og:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY.">
+<meta property="og:site_name" content="Second Reality">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Play the Second Reality music — Scream Tracker">
+<meta name="twitter:description" content="Hear Second Reality's original S3M modules in a Scream Tracker 3-style player. Music by Purple Motion.">
+<meta name="twitter:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta name="twitter:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY.">
+<link rel="stylesheet" href="bbs.css">
+<style>
+  /* Scream Tracker 3's own look: tan chrome, black inset data panels, cream
+     labels, green field values. ST3 drew its bevels with character graphics and
+     colour; CSS borders get closer to that than ASCII art would. */
+  :root {
+    --st-tan:   #a89a66;
+    --st-hi:    #d8cc99;
+    --st-lo:    #6b6136;
+    --st-label: #ece4bc;
+    --st-green: #3ac13a;
+    --st-data:  #b4b4b4;
+    --st-dot:   #4a4a4a;
+    --st-note:  #ffffff;
+    --st-band:  #7a6f3f;
+  }
+  /* Above the screen's scanline overlay (z-index 9), for the same reason the demo
+     is: ST3 is its own thing, and multiplying scanlines over tan chrome turns
+     every label to mud. */
+  .body.st { padding: 0; overflow: hidden; position: relative; z-index: 10; }
+  .st3 {
+    background: var(--st-tan);
+    border: 2px solid; border-color: var(--st-hi) var(--st-lo) var(--st-lo) var(--st-hi);
+    padding: 0.15em 0.5em 0.3em;
+    height: 100%;
+    color: var(--st-label);
+  }
+  .st3 .ttl { color: #f4ecc4; }
+
+  /* inset field: black box, green value, reversed bevel */
+  .fld {
+    background: #000; color: var(--st-green);
+    border: 1px solid; border-color: var(--st-lo) var(--st-hi) var(--st-hi) var(--st-lo);
+    padding: 0 0.3em; display: inline-block;
+  }
+  .st3 .status { color: #fff8d8; }
+
+  /* the pattern: one black panel, columns divided the way ST3 boxes them */
+  .pat {
+    background: #000; margin-top: 0.2em;
+    border: 1px solid; border-color: var(--st-lo) var(--st-hi) var(--st-hi) var(--st-lo);
+  }
+  .prow { display: flex; white-space: pre; }
+  .prow.beat { background: #0d0d0d; }
+  .prow.cur  { background: var(--st-band); }
+  .prow.cur .rn, .prow.cur i { color: #fff; }
+  .rn  { width: 3ch; text-align: right; padding-right: 0.4em; color: #7d7d7d; flex: none; }
+  .beat .rn { color: var(--st-label); }
+  .cel { width: 13ch; flex: none; border-left: 1px solid #2a2a2a; padding-left: 0.4em; color: var(--st-data); }
+  .cel i { font-style: normal; }
+  .cel i.n { color: var(--st-note); }
+  .cel i.s { color: #6fd0ff; }
+  .cel i.v { color: var(--st-green); }
+  .cel i.f { color: #ffe14d; }
+  .cel i.off { color: var(--st-dot); }
+
+  /* headers and meters reuse the pattern's grid exactly, so they line up. The
+     transparent side borders match the 1px border on .pat, which would otherwise
+     inset the pattern's own cells by a pixel relative to these rows. */
+  .chrow { display: flex; white-space: pre; border-left: 1px solid transparent;
+           border-right: 1px solid transparent; }
+  .chrow .rn { color: transparent; }
+  .chhead .cel { color: #1a1708; background: var(--st-hi); border-left: 1px solid var(--st-lo); }
+  .vu .cel { border-left: 0; color: var(--st-dot); }
+  .vu .cel b { color: #33ff33; font-weight: normal; }
+
+  .ords { white-space: pre-wrap; word-break: break-all; color: #46402a; margin-top: 0.15em;
+          max-height: 3.4em; overflow-y: auto; }
+  .ords span { cursor: pointer; }
+  .ords span:hover { color: #000; background: var(--st-hi); }
+  .ords span.on     { background: #000; color: var(--st-green); }
+  .ords span.mark   { color: #6a2a8a; }
+  .ords span.end    { color: #8a2020; }
+  .ords span.hidden { color: #7a5a00; }
+  .smp { color: #46402a; }
+  .smp b { color: #000; }
+
+  /* the board's blue lightbar does not belong on ST3's tan — use ST3's own
+     selected-item treatment (the darker olive band from its info page) */
+  .st3 .menu a { color: #46402a; }
+  .st3 .menu a .k { color: #1a1708; }
+  .st3 .menu a .t { color: #1a1708; }
+  .st3 .menu a .d { color: #6b6136; }
+  .st3 .menu a:hover, .st3 .menu a:focus, .st3 .menu a.sel {
+    background: var(--st-band); color: #fff;
+  }
+  .st3 .menu a.sel .k, .st3 .menu a.sel .t { color: #fff; }
+  .st3 .menu a.sel .d { color: #e8e0c0; }
+  .st3 .menu a:hover .k, .st3 .menu a:hover .t { color: #fff; }
+  .st3 .menu a:hover .d { color: #e8e0c0; }
+</style></head>
+<body><div class="crt"><div class="body st"><div class="st3">
+
+<div><span class="ttl">Scream Tracker V3.21</span>      Copyright (C) 1993,1994 Sami Tammilehto</div>
+
+<div>     Song <span class="fld" id="f-song">&nbsp;</span>   File <span class="fld" id="f-file">&nbsp;</span></div>
+<div>    Order <span class="fld" id="f-ord">&nbsp;</span>  Pattern <span class="fld" id="f-pat">&nbsp;</span>  Row <span class="fld" id="f-row">&nbsp;</span>  C.Tempo <span class="fld" id="f-bpm">&nbsp;</span>  C.Speed <span class="fld" id="f-spd">&nbsp;</span></div>
+<div class="status" id="f-status">&nbsp;</div>
+
+<div class="chrow chhead" id="tk-head"></div>
+<div class="pat" id="tk-pattern"></div>
+<div class="chrow vu" id="tk-vu"></div>
+
+<div class="ords" id="tk-ords"></div>
+<div class="smp" id="tk-smp"></div>
+
+<div class="menu" id="m"></div>
+</div></div></div>
+
+<script type="module">
+import { chrome, menu } from './bbs.js';
+import { initTracker } from './tracker.js';
+document.getElementById('m').innerHTML = menu([
+  { key: 'F5',  file: '#', title: 'Play / stop',      desc: 'F6 pattern · F7 from order · +/- step' },
+  { key: '0/1', file: '#', title: 'MUSIC0 / MUSIC1',  desc: 'intro · main demo · ←→ channels' },
+]);
+chrome({
+  title: 'Scream Tracker 3', prompt: 'Key',
+  reserve: ['0', '1', ' ', 'ArrowLeft', 'ArrowRight', '+', '-', '='],
+});
+initTracker();
+</script></body></html>

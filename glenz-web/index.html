@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Second Reality — Glenz Vectors (browser port)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+  body { display: flex; align-items: center; justify-content: center; }
+  #screen { image-rendering: pixelated; }
+  #overlay {
+    position: fixed; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 16px;
+    background: rgba(0,0,0,.55); color: #ccc; cursor: pointer;
+    font-family: "Courier New", monospace; z-index: 10;
+    user-select: none;
+  }
+  #overlay .msg { font-size: 22px; letter-spacing: 4px; color: #fff; }
+  #overlay .sub { font-size: 12px; color: #888; max-width: 480px; text-align: center; line-height: 1.6; }
+  #overlay.ready .msg { animation: blink 1.2s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: .25; } }
+  #endcard {
+    position: fixed; inset: 0; display: none; flex-direction: column;
+    align-items: center; justify-content: center; gap: 14px;
+    color: #aaa; font-family: "Courier New", monospace; z-index: 10;
+    background: transparent;
+  }
+  #endcard .t { font-size: 16px; letter-spacing: 3px; color: #ddd; }
+  #replay {
+    background: none; border: 1px solid #666; color: #ccc; padding: 8px 22px;
+    font-family: inherit; font-size: 13px; letter-spacing: 2px; cursor: pointer;
+  }
+  #replay:hover { border-color: #fff; color: #fff; }
+
+  /* ---------------------------------------------------------------- *
+   *  90s / demoscene ".NFO" about panel                              *
+   * ---------------------------------------------------------------- */
+  #aboutBtn {
+    position: fixed; top: 14px; right: 14px; z-index: 30;
+    width: 34px; height: 34px; cursor: pointer;
+    font-family: "Courier New", monospace; font-weight: bold; font-size: 18px;
+    color: #ffe14d; background: linear-gradient(#2a2a55, #14142e);
+    border-top: 2px solid #6f6fd0; border-left: 2px solid #6f6fd0;
+    border-right: 2px solid #05050f; border-bottom: 2px solid #05050f;
+    display: flex; align-items: center; justify-content: center;
+    text-shadow: 0 0 6px #ffe14d; box-shadow: 0 0 10px rgba(120,120,255,.4);
+    user-select: none;
+  }
+  #aboutBtn:hover { color: #fff; text-shadow: 0 0 10px #fff; background: linear-gradient(#3a3a75, #20204a); }
+  #aboutBtn:active { border-color: #05050f #6f6fd0 #6f6fd0 #05050f; }
+
+  /* fullscreen toggle — same bevel style, bottom right */
+  #fsBtn {
+    position: fixed; bottom: 14px; right: 14px; z-index: 30;
+    width: 34px; height: 34px; cursor: pointer;
+    font-family: "Courier New", monospace; font-weight: bold; font-size: 16px;
+    color: #ffe14d; background: linear-gradient(#2a2a55, #14142e);
+    border-top: 2px solid #6f6fd0; border-left: 2px solid #6f6fd0;
+    border-right: 2px solid #05050f; border-bottom: 2px solid #05050f;
+    display: flex; align-items: center; justify-content: center;
+    text-shadow: 0 0 6px #ffe14d; box-shadow: 0 0 10px rgba(120,120,255,.4);
+    user-select: none;
+  }
+  #fsBtn:hover { color: #fff; text-shadow: 0 0 10px #fff; background: linear-gradient(#3a3a75, #20204a); }
+  #fsBtn:active { border-color: #05050f #6f6fd0 #6f6fd0 #05050f; }
+
+  /* fullscreen auto-hide: fade the chrome after 2s of mouse inactivity */
+  #aboutBtn, #fsBtn { transition: opacity .35s; }
+  body.uihide #aboutBtn, body.uihide #fsBtn { opacity: 0; pointer-events: none; }
+  body.uihide { cursor: none; }
+
+  #about {
+    position: fixed; inset: 0; z-index: 40; display: none;
+    align-items: center; justify-content: center;
+    background:
+      repeating-linear-gradient(rgba(0,0,0,0) 0 2px, rgba(0,0,0,.28) 2px 4px),
+      radial-gradient(120% 120% at 50% 0%, #10102e 0%, #05050f 60%, #000 100%);
+    font-family: "Courier New", monospace;
+  }
+  #about.show { display: flex; }
+
+  .nfo {
+    width: min(760px, 92vw); max-height: 88vh; display: flex; flex-direction: column;
+    background: #0b0b1e; color: #cfe0ff;
+    border-top: 3px solid #7a7ae0; border-left: 3px solid #7a7ae0;
+    border-right: 3px solid #04040c; border-bottom: 3px solid #04040c;
+    box-shadow: 0 0 0 1px #000, 0 0 40px rgba(120,120,255,.35), 0 20px 60px rgba(0,0,0,.7);
+  }
+  .nfo-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 5px 8px; letter-spacing: 3px; font-weight: bold; font-size: 13px;
+    color: #fff; text-shadow: 0 0 6px #8ff;
+    background: linear-gradient(90deg, #d000d0, #3030c0 55%, #00c0c0);
+    border-bottom: 2px solid #04040c;
+  }
+  .nfo-bar .x {
+    cursor: pointer; padding: 0 7px; color: #fff; background: rgba(0,0,0,.35);
+    border-top: 2px solid #b0b0ff; border-left: 2px solid #b0b0ff;
+    border-right: 2px solid #000; border-bottom: 2px solid #000;
+  }
+  .nfo-bar .x:hover { background: #f33; }
+  .nfo-body { padding: 20px 26px 26px; overflow-y: auto; line-height: 1.65; font-size: 13.5px; }
+
+  .nfo-title {
+    font-size: 22px; font-weight: bold; letter-spacing: 2px; margin: 0 0 2px;
+    background: linear-gradient(90deg, #ff5cf0, #ffe14d 40%, #5cff9e 70%, #5ce1ff);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    text-shadow: 0 0 18px rgba(255,120,240,.25);
+  }
+  .nfo-sub { color: #8a8ac8; font-size: 12px; letter-spacing: 1px; margin: 0 0 16px; }
+  .nfo-rule { color: #45459a; user-select: none; margin: 14px 0 8px; overflow: hidden; white-space: nowrap; }
+  .nfo h3 {
+    margin: 0 0 6px; font-size: 13px; letter-spacing: 2px; color: #ffe14d;
+    text-shadow: 0 0 8px rgba(255,225,77,.4);
+  }
+  .nfo p { margin: 0 0 10px; }
+  .nfo b { color: #fff; }
+  .nfo .cy { color: #5ce1ff; }
+  .nfo .mg { color: #ff7cf0; }
+  .nfo .gn { color: #7dff9e; }
+  .nfo code {
+    color: #ffd27c; background: rgba(255,210,124,.08); padding: 0 4px; border-radius: 2px;
+    font-family: inherit;
+  }
+  .nfo .tip {
+    margin-top: 4px; padding: 8px 12px; color: #bfe0ff;
+    background: rgba(90,120,255,.10); border-left: 3px solid #5ce1ff;
+  }
+  .nfo-foot {
+    margin-top: 18px; padding-top: 10px; border-top: 1px dashed #33336a;
+    color: #8a8ac8; font-size: 12px; text-align: center; letter-spacing: 1px;
+  }
+  .nfo-foot .heart { color: #ff5c8a; }
+  .nfo-body::-webkit-scrollbar { width: 12px; }
+  .nfo-body::-webkit-scrollbar-track { background: #05050f; }
+  .nfo-body::-webkit-scrollbar-thumb {
+    background: linear-gradient(#5a5ac0, #2a2a70);
+    border-top: 2px solid #8080e0; border-left: 2px solid #8080e0;
+    border-right: 2px solid #000; border-bottom: 2px solid #000;
+  }
+</style>
+</head>
+<body>
+<canvas id="screen"></canvas>
+
+<div id="aboutBtn" title="About — how this works">?</div>
+<div id="fsBtn" title="Fullscreen (stretch to fill)">⛶</div>
+
+<div id="overlay">
+  <div class="msg">LOADING…</div>
+  <div class="sub">
+    SECOND REALITY — GLENZ VECTORS<br>
+    Future Crew, Assembly '93 — browser port of the original source<br>
+    music: "UnreaL ][" / Purple Motion (plays via libopenmpt)
+  </div>
+</div>
+
+<div id="endcard">
+  <div class="t">— END OF PART —</div>
+  <div class="sub" style="font-size:12px;color:#777">in the demo, the dot tunnel takes over here</div>
+  <button id="replay">REPLAY</button>
+</div>
+
+<div id="about">
+  <div class="nfo" role="dialog" aria-modal="true" aria-label="About this port">
+    <div class="nfo-bar"><span>■ SECOND.NFO</span><span class="x" id="aboutClose" title="Close (Esc)">X</span></div>
+    <div class="nfo-body">
+      <div class="nfo-title">SECOND REALITY // GLENZ VECTORS</div>
+      <div class="nfo-sub">a browser port — what it is &amp; how it was done</div>
+
+      <div class="nfo-rule">╤══════════════════════════════════════════════════════╤</div>
+      <h3>[ WHAT IS THIS ]</h3>
+      <p>A faithful port of the <b>glenz vectors</b> part of <b>Second Reality</b> —
+      the demo <span class="cy">Future Crew</span> won Assembly '93 with. It's built from
+      the original <b>C&nbsp;+&nbsp;x86 assembly</b> source, released into the public domain
+      for the demo's 20th anniversary (2013). This runs the actual program logic —
+      not a lookalike reimplementation.</p>
+
+      <div class="nfo-rule">╤══════════════════════════════════════════════════════╤</div>
+      <h3>[ GRAPHICS ]</h3>
+      <p><span class="mg">&gt;</span> <b>Virtual VGA.</b> A 320×200 mode-13h indexed framebuffer
+      with a 256-entry 6-bit palette, shown through a WebGL palette-lookup shader.</p>
+      <p><span class="mg">&gt;</span> <b>The "transparent new copper".</b> Polygon edges become
+      per-scanline <b>XOR color transitions</b>; consecutive frames are diffed and only the
+      changed spans are written. Glenz transparency = every visible face gets a dynamically
+      allocated 16-entry palette block of <span class="gn">face-brightness + background/4</span>.</p>
+      <p><span class="mg">&gt;</span> <b>Live physics.</b> The jello drop &amp; squash is real
+      integer physics with the original's truncation quirks — the splat is a view-space
+      Y-clamp, not a canned animation.</p>
+
+      <div class="nfo-rule">╤══════════════════════════════════════════════════════╤</div>
+      <h3>[ THREE.JS AS THE MONITOR ]</h3>
+      <p>Here's the twist: <b>three.js doesn't draw the vectors.</b> The whole polygon &amp;
+      span pipeline runs on the <b>CPU</b> into an indexed framebuffer — faithful to the
+      original's software renderer. Three.js plays the part of the <span class="cy">VGA
+      hardware</span>:</p>
+      <p><span class="mg">&gt;</span> the 320×N index buffer is uploaded as a
+      <code>DataTexture</code> (one 8-bit channel);</p>
+      <p><span class="mg">&gt;</span> the 256-entry 6-bit DAC palette is a second
+      <code>256×1</code> texture;</p>
+      <p><span class="mg">&gt;</span> a fullscreen quad + fragment shader does the palette
+      lookup <b>per pixel</b> — <span class="gn">index → DAC → RGB</span> — the exact path a
+      real mode-13h VGA card took, now on the GPU. Nearest-filtering keeps the chunky pixels
+      razor-sharp.</p>
+      <p>So the GPU is <b>emulating a 1993 monitor</b>, not rendering 3D — which is what makes
+      the output pixel-for-pixel what a DOS PC would have shown.</p>
+
+      <div class="nfo-rule">╤══════════════════════════════════════════════════════╤</div>
+      <h3>[ MUSIC — THE FUN PART ]</h3>
+      <p>The song is <span class="cy">"UnreaL ]["</span> by <b>Purple Motion</b>. But the
+      <code>MUSIC1.S3M</code> in the source tree is <b>booby-trapped</b>: its pattern data is
+      <b>XOR-scrambled on disk</b> — Future Crew's anti-ripping protection. Play the raw file
+      and you get random notes on real instruments. The descrambler lived <i>inside</i> FC's
+      private music player.</p>
+      <p><span class="mg">&gt;</span> We ship FC's <b>scrambled file verbatim</b> and descramble
+      it <b>live in your browser</b> — exactly as the demo did in 1993.</p>
+      <p><span class="mg">&gt;</span> The XOR keystream was <b>reconstructed from the scrambled
+      files alone</b> (no clean copy), by constraint-solving the S3M format. It reproduces the
+      officially released clean song <span class="gn">byte-for-byte</span>.</p>
+      <div class="tip">▸ Open DevTools → Console (<b>F12</b>) and reload to watch the descramble
+      happen on load: scrambled bytes <span class="mg">XOR</span> keystream = real notes.</div>
+
+      <div class="nfo-rule">╤══════════════════════════════════════════════════════╤</div>
+      <h3>[ SYNC ]</h3>
+      <p>The S3M order list carries <code>+++</code> markers at section boundaries; the demo's
+      interrupt server counts music rows to them. A <b>70&nbsp;Hz virtual vblank</b> clock is
+      anchored to the audio clock — the same master-clock trick the original used. The wipe
+      fires <span class="cy">6.5&nbsp;s</span> in, the ball hits the pedestal right on a section
+      change, and the part exits where the dot tunnel takes over in the full demo.</p>
+
+      <div class="nfo-rule">╤══════════════════════════════════════════════════════╤</div>
+      <h3>[ MADE BY CLAUDE ]</h3>
+      <p>All of this — start to finish — was done by <span class="mg">Claude&nbsp;Fable&nbsp;5</span>,
+      working only from the raw public-domain source:</p>
+      <p><span class="mg">&gt;</span> <b>reverse-engineering</b> the original C&nbsp;+&nbsp;x86
+      assembly — the XOR span engine, the 1.15 fixed-point math, the jello physics, and the
+      music-sync interrupt server;</p>
+      <p><span class="mg">&gt;</span> <b>porting</b> it to JavaScript&nbsp;+&nbsp;WebGL with the
+      original's integer semantics preserved;</p>
+      <p><span class="mg">&gt;</span> <b>cracking the music protection</b> — recovering the XOR
+      keystream from the scrambled S3M files <i>alone</i>, by constraint-solving the format,
+      with no clean reference;</p>
+      <p><span class="mg">&gt;</span> <b>building</b> the whole browser harness you're looking
+      at — this panel included.</p>
+      <p class="cy">Reading 30-year-old assembly, defeating its copy-protection, and shipping a
+      faithful port — from the source up.</p>
+
+      <div class="nfo-foot">
+        Future Crew 1993 · source: public domain (Unlicense)<br>
+        ported to the browser <span class="heart">♥</span> from raw source only, with Claude Fable&nbsp;5
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 90s about panel toggle (kept out of the module so it works pre-load)
+  (function () {
+    var about = document.getElementById('about');
+    var open = function () { about.classList.add('show'); };
+    var close = function () { about.classList.remove('show'); };
+    document.getElementById('aboutBtn').addEventListener('click', open);
+    document.getElementById('aboutClose').addEventListener('click', close);
+    about.addEventListener('click', function (e) { if (e.target === about) close(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+    // fullscreen toggle: main.js stretches the demo over the whole screen
+    // (no letterbox) while fullscreen is active. webkit prefixes for Safari.
+    var isFs = function () { return !!(document.fullscreenElement || document.webkitFullscreenElement); };
+    document.getElementById('fsBtn').addEventListener('click', function () {
+      var doc = document, el = doc.documentElement;
+      if (isFs()) (doc.exitFullscreen || doc.webkitExitFullscreen).call(doc);
+      else (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+    });
+    // YouTube-style chrome auto-hide: in fullscreen, fade the controls (and
+    // cursor) after 2s of mouse inactivity; any movement brings them back
+    var hideTimer = null;
+    var showUI = function () {
+      document.body.classList.remove('uihide');
+      if (hideTimer) clearTimeout(hideTimer);
+      hideTimer = null;
+      if (isFs()) hideTimer = setTimeout(function () { document.body.classList.add('uihide'); }, 2000);
+    };
+    document.addEventListener('mousemove', showUI);
+    document.addEventListener('fullscreenchange', showUI);
+    document.addEventListener('webkitfullscreenchange', showUI);
+  })();
+</script>
+<script type="module" src="main.js"></script>
+</body>
+</html>

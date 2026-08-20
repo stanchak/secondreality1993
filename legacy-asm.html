@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>Assembly '94 photographs — Second Reality</title>
+<meta name="description" content="Photographs from Assembly '94 in Helsinki, the year after Second Reality premiered.">
+<link rel="canonical" href="https://www.secondreality1993.com/legacy-asm.html">
+<meta property="og:title" content="Assembly '94 photographs — Second Reality">
+<meta property="og:description" content="Photographs from Assembly '94 in Helsinki, the year after Second Reality premiered.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.secondreality1993.com/legacy-asm.html">
+<meta property="og:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY.">
+<meta property="og:site_name" content="Second Reality">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Assembly '94 photographs — Second Reality">
+<meta name="twitter:description" content="Photographs from Assembly '94 in Helsinki, the year after Second Reality premiered.">
+<meta name="twitter:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta name="twitter:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY."><link rel="stylesheet" href="bbs.css"></head>
+<body><div class="crt"><div class="body">
+
+<p class="yel">ASSEMBLY ’94 <span class="dim">— Helsinki, the year after the premiere</span></p>
+
+<div id="frame" style="text-align:center"></div>
+
+<div class="menu" id="m"></div>
+</div></div>
+<script type="module">
+import { chrome, menu } from './bbs.js';
+
+const PICS = [
+  ['assembly-1994-exterior',
+   'The ice hockey hall with the ASSEMBLY ’94 banner. Photo: doj, via cubic.org',
+   'Helsinki ice hockey hall exterior with an Assembly 1994 banner'],
+  ['assembly-1994-hall',
+   'Inside the hall — three big screens hung from the ceiling. Photo: doj, via cubic.org',
+   'Crowd and PCs inside the Assembly 1994 party hall'],
+  ['assembly-1994-abyss',
+   'Setting up the Doom machines. Abyss of Future Crew is in the frame. Photo: doj, via cubic.org',
+   'Beige PCs lined up for Doom; Abyss of Future Crew among the organisers'],
+  ['assembly-1994-sleeping',
+   'Sleeping on the hall floor. Group banners on the wall include Panic. Photo: doj, via cubic.org',
+   'Attendees asleep on camp beds among PCs at Assembly 1994'],
+  ['assembly-1994-sleeping2',
+   'Heads on the desks, Coke bottles, a fan. The party at 6am. Photo: doj, via cubic.org',
+   'People asleep at their PCs at Assembly 1994'],
+  ['assembly-1994-hook',
+   'Hook of Cubic, wearing a hard disk as a necklace. Helsinki, Saturday. Photo: doj, via cubic.org',
+   'A scener on a park bench wearing a hard-disk necklace, Assembly 1994'],
+];
+let i = 0;
+const frame = document.getElementById('frame');
+function show() {
+  const [f, cap, alt] = PICS[i];
+  frame.innerHTML =
+    `<img class="art" src="img/people/${f}.jpg" alt="${alt}" style="max-width:100%;max-height:52vh">` +
+    `<p class="dim">${i + 1}/${PICS.length} — ${cap}</p>`;
+}
+document.getElementById('m').innerHTML = menu([
+  { key: 'N', file: '#', title: 'Next picture', desc: 'or press → ' },
+  { key: 'P', file: '#', title: 'Previous',     desc: 'or press ←' },
+]);
+show();
+chrome({ title: 'Assembly ’94', reserve: ['n', 'p', 'ArrowLeft', 'ArrowRight'] });
+addEventListener('keydown', e => {
+  if (e.key === 'n' || e.key === 'N' || e.key === 'ArrowRight') { i = (i + 1) % PICS.length; show(); }
+  if (e.key === 'p' || e.key === 'P' || e.key === 'ArrowLeft')  { i = (i + PICS.length - 1) % PICS.length; show(); }
+});
+document.querySelectorAll('.menu a').forEach(a => a.addEventListener('click', e => {
+  e.preventDefault();
+  i = (a.dataset.key === 'N' ? i + 1 : i + PICS.length - 1) % PICS.length; show();
+}));
+</script></body></html>

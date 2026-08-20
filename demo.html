@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Second Reality</title>
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://www.secondreality1993.com/">
+<meta http-equiv="refresh" content="0; url=/">
+<script>
+  const q = new URLSearchParams(location.search);
+  const part = (location.hash.slice(1) || q.get('part') || '').replace(/[^a-z0-9]/gi, '');
+  location.replace(part ? '/?part=' + encodeURIComponent(part.toLowerCase()) : '/?play');
+</script>
+</head>
+<body>
+<p><a href="/">Second Reality</a></p>
+</body>
+</html>

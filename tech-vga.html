@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>VGA tricks in Second Reality</title>
+<meta name="description" content="How Second Reality used undocumented VGA registers, planar modes and palette animation.">
+<link rel="canonical" href="https://www.secondreality1993.com/tech-vga.html">
+<meta property="og:title" content="VGA tricks in Second Reality">
+<meta property="og:description" content="How Second Reality used undocumented VGA registers, planar modes and palette animation.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.secondreality1993.com/tech-vga.html">
+<meta property="og:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY.">
+<meta property="og:site_name" content="Second Reality">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="VGA tricks in Second Reality">
+<meta name="twitter:description" content="How Second Reality used undocumented VGA registers, planar modes and palette animation.">
+<meta name="twitter:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta name="twitter:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY."><link rel="stylesheet" href="bbs.css"></head>
+<body><div class="crt"><div class="body">
+
+<p class="yel">REPRODUCING VGA, NOT EMULATING IT</p>
+
+<p>Second Reality barely uses a normal video mode. It uses “tweaked” modes built
+by writing undocumented CRTC registers, and it animates by changing where the
+hardware <b>starts reading memory</b> rather than by moving pixels.</p>
+
+<pre>  <span class="cyn">Unchained planar modes</span>
+      320x400 and 640x400, plus a 16-colour 640x350 EGA mode for the
+      end scroller.
+
+  <span class="cyn">CRTC start address + pixel panning</span>
+      The panorama scroll, the endcard’s wipe-in and its ripple are all
+      a moving read pointer, not a blit.
+
+  <span class="cyn">Line-compare split screens</span>
+      The plasma’s falling screen is the hardware split point sweeping
+      down a table.
+
+  <span class="cyn">Palette animation</span>
+      Most fades, flashes and colour cycles never touch a pixel.</pre>
+
+<p>So the port keeps an 8-bit indexed framebuffer and does the palette lookup in a
+shader, exactly as the DAC did. Changing 768 bytes changes the whole screen — which
+is the entire reason the original could afford these effects on a 486.</p>
+
+<p class="grn">WHAT IS ACTUALLY ON THE GPU</p>
+<p>One triangle. Two textures. A four-line fragment shader. That is the whole of
+it:</p>
+
+<pre>  <span class="cyn">the framebuffer</span>   a 320x400 Uint8Array, uploaded as an 8-bit
+                    single-channel texture, nearest-filtered
+  <span class="cyn">the palette</span>       a 256x1 RGBA texture, nearest-filtered
+  <span class="cyn">the shader</span>        index -&gt; palette lookup -&gt; pixel</pre>
+
+<p>That shader <i>is</i> the DAC. The palette is kept the way the hardware kept it
+— <b>6-bit</b>, 0..63 per channel — and only widened to 8-bit at the moment of
+upload, so a fade is still 768 bytes changing and nothing redrawing.</p>
+
+<p>It is written directly against <b>WebGL2</b>, about forty lines, no graphics
+library. The triangle is generated from <span class="cyn">gl_VertexID</span> in the
+vertex shader, so there is not even a vertex buffer — three vertices, and the
+palette lookup.</p>
+
+<p>Everything else is arithmetic on that one array, in plain JavaScript. The scroll
+is a moving read offset, the plasma's falling screen is a line-compare row, the
+endcard's ripple is a per-row start address — reproduced as the register writes they
+were, not as effects that resemble them.</p>
+
+<p>Which also means <b>none of the 3D is done by the GPU</b>. The ship, the glenz
+solid and the dot tunnel are the original's own software rasterisers ported line for
+line —
+gouraud spans, XOR span transitions, erase-and-plot dots — all writing 8-bit indices
+into that same array. The GPU never sees a polygon.</p>
+
+<div class="menu" id="m"></div>
+</div></div>
+<script type="module">
+import { chrome, menu } from './bbs.js';
+document.getElementById('m').innerHTML = menu([
+  { key: 'D', file: 'tech-assets.html', title: 'Asset archaeology', desc: 'next topic' },
+]);
+chrome({ title: 'VGA' });
+</script></body></html>

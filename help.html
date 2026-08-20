@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>Help — Second Reality</title>
+<meta name="description" content="How to use this Second Reality site: keys, the command line, and where things are.">
+<link rel="canonical" href="https://www.secondreality1993.com/help.html">
+<meta property="og:title" content="Help — Second Reality">
+<meta property="og:description" content="How to use this Second Reality site: keys, the command line, and where things are.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.secondreality1993.com/help.html">
+<meta property="og:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY.">
+<meta property="og:site_name" content="Second Reality">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Help — Second Reality">
+<meta name="twitter:description" content="How to use this Second Reality site: keys, the command line, and where things are.">
+<meta name="twitter:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta name="twitter:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY."><link rel="stylesheet" href="bbs.css"></head>
+<body><div class="crt"><div class="body">
+
+<p class="yel">HELP</p>
+
+<pre>  <span class="cyn">1-9 J L</span>     jump straight to that area from anywhere
+  <span class="cyn">A-F</span>         menu items on the page you are reading
+  <span class="cyn">&uarr; &darr;</span>         move the highlight, ENTER opens it
+  <span class="cyn">ESC</span>         back up one level — the prompt says where to
+  <span class="cyn">Q</span>           straight back to the main menu
+  <span class="cyn">/</span>           type a command; <span class="cyn">TAB</span> completes it, and a
+              unique abbreviation is enough — <span class="cyn">/lic</span> will do
+  <span class="cyn">*</span>           in the left margin: a screen you have not opened.
+              <span class="cyn">/new</span> goes to the first one, <span class="cyn">/rescan</span> forgets them all
+  <span class="cyn">?</span>           this screen</pre>
+
+<p>Two screens keep their own keys. On the <b>tracker</b>: F5 or SPACE plays, F8
+stops, F6 loops the pattern, F7 plays from the current order, 0 and 1 pick the
+module, +/- step the order, &larr;&rarr; scroll the channels. Inside the
+<b>demo</b>: SPACE pauses, &larr;&rarr; and 1-9 move between parts,
+<span class="cyn">J</span> opens the parts index, Q comes back.</p>
+
+<div class="menu" id="m"></div>
+</div></div>
+<script type="module">
+import { chrome, menu } from './bbs.js';
+document.getElementById('m').innerHTML = menu([
+  { key: 'X', file: 'hidden.html', title: 'Hidden screens',  desc: 'seven, and the words that reach them' },
+  { key: '3', file: 'about.html',  title: 'What this is',     desc: 'start here' },
+]);
+chrome({ title: 'Help' });
+</script></body></html>

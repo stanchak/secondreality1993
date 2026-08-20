@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>The part that never runs — Second Reality</title>
+<meta name="robots" content="noindex"><link rel="stylesheet" href="bbs.css"></head>
+<body><div class="crt"><div class="body">
+
+<p class="yel">THE PART THAT NEVER RUNS</p>
+
+<p>The loader lists every executable it chain-loads with the part’s name in a
+comment beside it. One entry is not like the others:</p>
+
+<pre>  <span class="dim">;txthid</span>  <span class="dim">db      'Hidden part',0</span>
+  <span class="cyn">exehid</span>                          <span class="cyn">db 'DDSTARS.EXE',0</span></pre>
+
+<p>DDSTARS.EXE is in the archive — 10,573 bytes — and a normal run never touches
+it. Which parts run is decided by one byte, <span class="cyn">whattorun</span>,
+which starts life at <b>07fh</b>: bit 7 is the only route to the hidden part, and
+the comment listing what the bits mean does not mention bit 7. README.1ST
+documents the digits 1 to 5 as start points; the parser takes one more character
+it never mentions, and <span class="grn">U</span> selects the table entry
+<b>80h</b> — bit 7 and nothing else. So <span class="grn">SECOND U</span> runs
+“Desert Dream Stars (PSI)” and no other part of the demo.</p>
+
+<p>It is <b>a message</b>. Two screens of text rise through a mirrored starfield,
+and they have not been read much since 1993:</p>
+
+<pre class="cyn">  “A hidden part? No, just an experiment we left out... Looks
+   familiar? Well, it should (in case you watch Amiga demos as
+   well). Since it's so hard to think what to say here, let's tell
+   you the reasons why...  the demo was late:  1) The FC tradition
+   of finishing projects just a very little bit late  2) Trying to
+   get too many things done at once  3) And of course being lazy...”</pre>
+
+<div class="menu" id="m"></div>
+</div></div>
+<script type="module">
+import { chrome, menu, setStatus } from './bbs.js';
+document.getElementById('m').innerHTML = menu([
+  { key: 'R', file: '?part=hidden', title: 'Run it',          desc: 'ported — this board’s SECOND U' },
+  { key: 'H', file: 'hidden-how.html',  title: 'How it works',    desc: 'and where its music came from' },
+]);
+chrome({ title: 'The hidden part' });
+setStatus('DDSTARS.EXE · 10,573 BYTES · SECOND U');
+</script></body></html>

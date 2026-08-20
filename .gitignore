@@ -1,0 +1,34 @@
+.DS_Store
+
+# dependency installs
+node_modules/
+
+# screenshot-harness output (regenerate with tools/shot.sh)
+unreal2/tools/**/*.png
+unreal2/tools/**/*.log
+glenz-web/tools/**/*.png
+glenz-web/tools/**/*.log
+
+# rendered audio scratch
+*.wav
+
+# internal working notes / one-off investigative scripts (kept locally, not shipped)
+HANDOFF.md
+unreal2/tools/derive_gates.mjs
+unreal2/tools/derive_lnszoom_gates.mjs
+unreal2/tools/trace_credits.mjs
+
+# Fetched candidate photographs — third-party images staged for a licence check,
+# never published from here. Regenerate with:
+#   node unreal2/tools/fetch_people_photos.mjs <list.json>
+img/people/candidates/
+img/people/MANIFEST.md
+# Promoted out of candidates/ but not yet referenced by a page, so still
+# unpublished and still unlicensed:
+img/people/jussi-slush.jpg
+img/people/markus-maki.jpg
+img/people/remedy-1997-cover.jpg
+img/people/remedy-1997-pics.jpg
+__pycache__/
+.vercel
+.env*

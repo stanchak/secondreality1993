@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>How big Second Reality was — two files, 2.33 MB</title>
+<meta name="description" content="Second Reality shipped as two files totalling 2.33 MB. How Future Crew packed nineteen parts and the music.">
+<link rel="canonical" href="https://www.secondreality1993.com/tech-size.html">
+<meta property="og:title" content="How big Second Reality was — two files, 2.33 MB">
+<meta property="og:description" content="Second Reality shipped as two files totalling 2.33 MB. How Future Crew packed nineteen parts and the music.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.secondreality1993.com/tech-size.html">
+<meta property="og:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY.">
+<meta property="og:site_name" content="Second Reality">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How big Second Reality was — two files, 2.33 MB">
+<meta name="twitter:description" content="Second Reality shipped as two files totalling 2.33 MB. How Future Crew packed nineteen parts and the music.">
+<meta name="twitter:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta name="twitter:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY."><link rel="stylesheet" href="bbs.css"></head>
+<body><div class="crt"><div class="body">
+
+<p class="yel">HOW BIG IT WAS</p>
+
+<p>Second Reality shipped as <b>two files</b>. Nineteen parts, an hour of
+engineering per second of runtime, and all of the artwork:</p>
+
+<pre>  <span class="cyn">SECOND.EXE</span>    1,451,077   the loader, with all 79 part files
+                            appended to it — 22 executables and
+                            57 data files, XOR-obfuscated, no
+                            directory a stranger could read
+  <span class="cyn">REALITY.FC</span>      992,188   a 16-byte header and the two S3Ms,
+                            stored plain
+                <span class="dim">─────────</span>
+                <b>2,443,265</b>   <span class="dim">2.33 MiB, and 41% of it is music</span></pre>
+
+<p>Those are the sizes the build itself recorded: <span class="cyn">PACK.C</span>
+appends every file in <span class="cyn">DATA\</span> to a copy of the loader and
+writes the offsets and lengths out as <span class="cyn">PACKING.INC</span>, which
+the loader is then assembled around. The shipped copy of that table is still in
+the release, so the byte counts above are not an estimate.</p>
+
+<p>What is left after the music is <b>1.42 MB</b> — and every part executable in
+it is <span class="cyn">PKLITE</span>-compressed, so that is 1.42 MB of already
+compressed code and art. It ran on a 386 in <b>570,000 bytes</b> of free
+conventional memory.</p>
+
+<p class="grn">IT DID NOT FIT ON A FLOPPY</p>
+<p>Two files at 2.33 MiB do not go onto a 1.44 MB disk, and Future Crew did not
+pretend otherwise. The demo was released as <b>two archives</b>, one per disk:</p>
+
+<pre>  <span class="cyn">2NDREAL1.ZIP</span>   <span class="dim">and</span>   <span class="cyn">2NDREAL2.ZIP</span>
+
+      "You must unpack both zip-files to the same directory
+       before the demo can be run."          <span class="dim">— README.1ST</span></pre>
+
+<p>The BBS file descriptions that shipped in the release settle it beyond the
+prose: <span class="cyn">FILE_ID.1</span> and <span class="cyn">FILE_ID.2</span> are
+the same ANSI logo, numbered <b>1/2</b> and <b>2/2</b> in the top right corner.
+Second Reality arrived on two floppies.</p>
+
+<p>How close it was: a 1.44 MB disk formats to <b>1,474,560</b> bytes, and
+<span class="cyn">SECOND.EXE</span> is 1,451,077 of them. The loader and all 79
+parts clear a floppy by <b>23,483 bytes</b> — before the music has been put
+anywhere.</p>
+
+<div class="menu" id="m"></div>
+</div></div>
+<script type="module">
+import { chrome, menu, setStatus } from './bbs.js';
+document.getElementById('m').innerHTML = menu([
+  { key: 'A', file: 'tech-js.html', title: 'And what the port comes to', desc: 'the same demo, in JavaScript' },
+]);
+chrome({ title: 'How big it was' });
+setStatus('TWO FILES · 2,443,265 BYTES');
+</script></body></html>

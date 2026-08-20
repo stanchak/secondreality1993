@@ -1,0 +1,321 @@
+/* ===========================================================================
+   Second Reality — a WWIV-style BBS.
+
+   Everything is one 80x25 VGA text screen. The frame is locked to 4:3 and the
+   font size is derived from it, so 80 columns always fit exactly and a page
+   that doesn't fit the screen is a page that needs splitting. Colours are the
+   real VGA text attributes: grey body on black, bright white/cyan/yellow for
+   emphasis, and that is the whole palette.
+   =========================================================================== */
+
+:root {
+  --blk: #000000;
+  --blu: #0000aa;  --grn: #00aa00;  --cyn: #00aaaa;
+  --red: #aa0000;  --mag: #aa00aa;  --brn: #aa5500;  --gry: #aaaaaa;
+  --dgy: #555555;  --bblu:#5555ff;  --bgrn:#55ff55;  --bcyn:#55ffff;
+  --bred:#ff5555;  --bmag:#ff55ff;  --yel: #ffff55;  --wht: #ffffff;
+
+  /* 80 columns wide at 0.6em advance => screen width / 48 */
+  --screen-w: min(96vw, 128vh);
+  --fs: calc(var(--screen-w) / 48);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0; height: 100%;
+  background: #050505;
+  color: var(--gry);
+  font-family: "DejaVu Sans Mono", "Liberation Mono", Menlo, Consolas, "Courier New", monospace;
+  overflow: hidden;
+}
+
+body {
+  display: grid; place-items: center;
+  /* faint glow behind the tube */
+  background: radial-gradient(ellipse at center, #0d0d16 0%, #050505 70%);
+}
+
+/* ---- the tube ----------------------------------------------------------- */
+
+.crt {
+  width: var(--screen-w);
+  aspect-ratio: 4 / 3;
+  background: var(--blk);
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  box-shadow: 0 0 0 2px #1a1a24, 0 0 34px #000, 0 0 90px #1122aa22;
+  font-size: var(--fs);
+  line-height: 1.18;
+  padding: calc(var(--fs) * 0.7) calc(var(--fs) * 0.6);
+  display: flex; flex-direction: column;
+}
+
+/* scanlines + a very slight vignette, kept light enough to stay readable */
+.crt::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 9;
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 2px, #00000055 2px 4px),
+    radial-gradient(ellipse at center, transparent 55%, #00000066 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crt::after { background: radial-gradient(ellipse at center, transparent 60%, #00000055 100%); }
+  .cursor { animation: none !important; }
+}
+
+/* ---- text --------------------------------------------------------------- */
+
+/* crawler/screen-reader only — does not show on the tube */
+.seo-h {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+
+.crt h1 { font-size: inherit; font-weight: inherit; margin: 0 0 0.5em; }
+.crt b, .crt strong { color: var(--wht); font-weight: normal; }
+.wht { color: var(--wht); }
+.yel { color: var(--yel); }
+.cyn { color: var(--bcyn); }
+.grn { color: var(--bgrn); }
+.mag { color: var(--bmag); }
+.red { color: var(--bred); }
+.blu { color: var(--bblu); }
+.dim { color: var(--dgy); }
+.brn { color: var(--brn); }
+
+.crt a { color: var(--bcyn); text-decoration: none; }
+.crt a:focus { background: var(--bcyn); color: #000; outline: none; }
+/* hover only where there is a pointer to hover with — on a touchscreen the
+   style latches after a tap and leaves the last thing touched lit up */
+@media (hover: hover) {
+  .crt a:hover { background: var(--bcyn); color: #000; outline: none; }
+}
+.crt a:active { background: var(--bcyn); color: #000; }
+
+pre { margin: 0; font: inherit; white-space: pre-wrap; }
+p { margin: 0 0 0.5em; }
+ul { margin: 0 0 0.6em; padding-left: 1.6em; }
+li { margin: 0; }
+
+/* ---- chrome ------------------------------------------------------------- */
+
+.topbar {
+  color: var(--blk); background: var(--cyn);
+  padding: 0 0.5em; display: flex; justify-content: space-between; gap: 1em;
+  white-space: nowrap; overflow: hidden;
+}
+.topbar .r { color: #003b3b; }
+
+.rule { color: var(--blu); white-space: nowrap; overflow: hidden; }
+
+.body {
+  flex: 1 1 auto; min-height: 0; padding: 0.55em 0.2em 0;
+  overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--blu) transparent;
+}
+.body::-webkit-scrollbar { width: 0.4em; }
+.body::-webkit-scrollbar-thumb { background: var(--blu); }
+
+/* The demo takes the whole body area; it sizes itself to 4:3 within whatever
+   box it is given, so it letterboxes cleanly inside the screen.
+
+   It also sits ABOVE the screen's scanline overlay (which is z-index 9). The
+   demo is already a treated image — a pixel-doubled 320x400 raster through a
+   palette shader — so laying the CRT effect over it is the same effect twice.
+   Lifting just the demo leaves the chrome scanlined like every other screen.
+
+   Lives here rather than in demo.html because the board mounts this screen into
+   whatever page you were on when you asked for it (see mountDemo in bbs.js). */
+.body.demo { padding: 0; overflow: hidden; display: flex; position: relative; z-index: 10; }
+.body.demo .stage { position: relative; flex: 1 1 auto; min-width: 0; }
+.body.demo iframe {
+  width: 100%; height: 100%;
+  border: 0; background: #000; display: block;
+}
+/* Fullscreen is requested on this wrapper rather than on the <iframe>, because
+   the element in the top layer cannot be transformed (the UA stylesheet pins
+   `transform: none !important` on :fullscreen) and a phone held upright needs
+   the frame turned a quarter turn. The frame just fills whatever it is given. */
+.body.demo:fullscreen { width: 100vw; height: 100vh; background: #000; }
+
+.cmd { padding-top: 0.35em; white-space: nowrap; overflow: hidden; }
+
+/* The touch bottom line: what a phone gets instead of a command prompt. The
+   board's tree is walked with ESC, which a phone does not have, so the walk
+   becomes a button that names where it goes. */
+.cmd.touch { display: flex; align-items: stretch; gap: 0.5em; padding-top: 0.4em; }
+.cmd.touch .tb {
+  display: flex; align-items: center; min-height: 44px; padding: 0 0.8em;
+  color: var(--bcyn); background: #06060e;
+  border-top: 1px solid var(--blu); border-left: 1px solid var(--blu);
+  border-right: 1px solid #000; border-bottom: 1px solid #000;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.cmd.touch .tb:first-child { flex: 1 1 auto; min-width: 0; }
+.cmd.touch .tb.off { color: var(--dgy); border-color: #14142a #14142a #000 #000; }
+.cmd.touch .tb:active { background: var(--blu); color: var(--wht); }
+
+.cursor {
+  display: inline-block; width: 0.6em; height: 1.05em; background: var(--gry);
+  vertical-align: text-bottom; animation: blink 1.05s steps(2) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ---- menus -------------------------------------------------------------- */
+
+.menu { margin: 0.2em 0; }
+.menu a {
+  display: block; color: var(--gry); padding: 0 0.3em; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.menu a .k { color: var(--yel); }
+.menu a .t { color: var(--bcyn); }
+.menu a .d, .menu a .dots { color: var(--dgy); }
+/* .sel is the ↑↓ cursor and :focus is the tab ring; both are keyboard things and
+   stay unconditional. :hover is gated — see the note above. */
+.menu a:focus, .menu a.sel, .menu a:active {
+  background: var(--blu); color: var(--wht); outline: none;
+}
+.menu a:focus .k, .menu a.sel .k, .menu a:active .k { color: var(--yel); }
+.menu a:focus .t, .menu a.sel .t, .menu a:active .t,
+.menu a:focus .d, .menu a.sel .d, .menu a:active .d,
+.menu a:focus .dots, .menu a.sel .dots, .menu a:active .dots { color: var(--wht); }
+
+@media (hover: hover) {
+  .menu a:hover { background: var(--blu); color: var(--wht); outline: none; }
+  .menu a:hover .k { color: var(--yel); }
+  .menu a:hover .t, .menu a:hover .d, .menu a:hover .dots { color: var(--wht); }
+}
+
+/* ---- banner ------------------------------------------------------------- */
+
+.banner { color: var(--bblu); white-space: pre; line-height: 1.02; margin: 0 0 0.9em; }
+
+/* ---- art ---------------------------------------------------------------- */
+
+.art { display: block; image-rendering: pixelated; border: 1px solid var(--blu); }
+.art.portrait { max-height: 40vh; width: auto; margin: 0 auto; }
+figure { margin: 0.4em 0; }
+figcaption { color: var(--dgy); }
+
+/* ---- simple two-column layout for pages that want it -------------------- */
+
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.4em; }
+.cols > * { min-width: 0; }
+
+/* ===========================================================================
+   PHONES
+
+   The 4:3 tube is a lie on a phone: locking a portrait screen to 4:3 leaves a
+   letterbox with 8px text in it. So the tube becomes the screen — the whole
+   viewport, portrait, in the same colours and the same font.
+
+   The 80-column grid does not survive either. It becomes ~46 columns, which is
+   what the ASCII banners actually need, and the two things built for 80 —
+   menu rows with dot leaders, and the wide <pre> tables — are handled rather
+   than squeezed: the leaders go and the description drops to its own line,
+   and the tables keep their alignment and scroll sideways on their own.
+   =========================================================================== */
+
+@media (max-width: 820px) {
+  :root {
+    --screen-w: 100vw;
+    /* ~46 columns at a 0.6em advance, floored so it stays legible on a 320px
+       phone and capped so a big tablet does not get comic-book text */
+    --fs: clamp(11px, calc(100vw / 28), 18px);
+  }
+
+  body { display: block; background: var(--blk); }
+
+  .crt {
+    width: 100vw;
+    height: 100dvh;                 /* dvh, so the URL bar sliding away is fine */
+    max-height: 100dvh;
+    aspect-ratio: auto;
+    border-radius: 0;
+    box-shadow: none;
+    padding: calc(var(--fs) * 0.5) calc(var(--fs) * 0.45);
+    padding-bottom: max(calc(var(--fs) * 0.5), env(safe-area-inset-bottom));
+  }
+
+  /* the scanline overlay is a 2px pattern built for a big tube; at phone
+     pixel densities it turns into a grey wash, so keep only the vignette */
+  .crt::after {
+    background: radial-gradient(ellipse at center, transparent 60%, #00000066 100%);
+  }
+
+  /* Both halves have to be allowed to shrink, or the title runs straight over
+     the node/baud readout instead of ellipsising short of it. */
+  .topbar { font-size: 0.85em; gap: 0.6em; }
+  .topbar > span {
+    min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .topbar > span:first-child { flex: 1 1 auto; }
+  .topbar .r { flex: 0 2 auto; }
+
+  /* Menu rows become tap targets: key and title on one line, description
+     under it, the whole row at least a finger tall. */
+  .menu a {
+    white-space: normal;
+    padding: 0.45em 0.3em;
+    min-height: 44px;
+    border-bottom: 1px solid #10101c;
+  }
+  .menu a .t { white-space: pre-wrap; }
+  .menu a .dots { display: none; }
+  .menu a .d { display: block; padding-left: 2.4em; }
+
+  /* Wide tables keep their alignment and scroll rather than reflowing into
+     nonsense — these are 80-column ASCII, not prose. */
+  pre { white-space: pre; overflow-x: auto; }
+  .banner { overflow-x: auto; font-size: 0.92em; }
+  .rule { font-size: 0.7em; }
+
+  .cmd { font-size: 0.85em; }
+  .cmd #cmd-hint { display: none; }
+
+  .cols { grid-template-columns: 1fr; }
+  .art.portrait { max-height: 32vh; }
+}
+
+/* ---- the demo, filling a phone ------------------------------------------ */
+
+/* Landscape fullscreen the way a video does it. Android gets the real thing —
+   element fullscreen plus an orientation lock — and this is the fallback for
+   iOS, which offers neither to anything that is not a <video>: rotate the
+   frame a quarter turn and swap its dimensions, so a portrait phone shows a
+   landscape demo filling the glass. */
+body.demo-fs { overflow: hidden; background: #000; }
+body.demo-fs .topbar,
+body.demo-fs .rule,
+body.demo-fs .cmd,
+body.demo-fs .menu { display: none; }
+body.demo-fs .crt { padding: 0; height: 100dvh; }
+body.demo-fs .body.demo { position: fixed; inset: 0; z-index: 50; }
+
+/* The STAGE turns, not the frame — the frame may be the fullscreen element, and
+   a fullscreen element cannot be transformed (the UA stylesheet pins
+   `transform: none !important` on it). Turning the stage also takes anything
+   laid over the demo with it, so notices read the same way round as the demo. */
+body.demo-fs.demo-rot .body.demo .stage {
+  position: fixed;
+  top: 50%; left: 50%;
+  width: 100dvh; height: 100dvw;      /* swapped: the stage is on its side */
+  transform: translate(-50%, -50%) rotate(90deg);
+  transform-origin: center center;
+}
+
+/* Said once, over the top of the demo, in the stage's coordinates. */
+.fs-hint {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 5;
+  display: flex; align-items: center; gap: 0.6em;
+  padding: 0.7em 1em;
+  font-family: inherit; font-size: 13px; line-height: 1.35;
+  color: #cfe0ff; background: rgba(8, 8, 24, .88);
+  border-bottom: 1px solid #33336a;
+  cursor: pointer; user-select: none;
+}
+.fs-hint b { color: var(--yel); font-weight: normal; }
+.fs-hint .x { margin-left: auto; padding: 0 0.4em; color: var(--dgy); }

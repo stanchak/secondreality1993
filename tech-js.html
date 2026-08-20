@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>What the port comes to — Second Reality</title><meta name="description" content="What a faithful browser port of a 1993 demo weighs: 9,188 lines across 20 modules, and 5.78 MB to download against the original's 2.33.">
+<link rel="canonical" href="https://www.secondreality1993.com/tech-js.html">
+<meta property="og:title" content="What the port comes to — Second Reality by Future Crew">
+<meta property="og:description" content="What a faithful browser port of a 1993 demo weighs: 9,188 lines across 20 modules, and 5.78 MB to download against the original's 2.33.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.secondreality1993.com/tech-js.html">
+<meta property="og:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY.">
+<meta property="og:site_name" content="Second Reality">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="What the port comes to — Second Reality by Future Crew">
+<meta name="twitter:description" content="What a faithful browser port of a 1993 demo weighs: 9,188 lines across 20 modules, and 5.78 MB to download against the original's 2.33.">
+<meta name="twitter:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta name="twitter:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY.">
+<link rel="stylesheet" href="bbs.css"></head>
+<body><div class="crt"><div class="body">
+
+<p class="yel">WHAT THE PORT COMES TO</p>
+
+<p>The release’s 250 C, assembly and Pascal files — the whole tree, tools and
+abandoned builds included — come to <b>67,924 lines</b>. The port is one module
+per part:</p>
+
+<pre>  20 modules      <span class="wht">9,188</span> lines   <span class="wht">6,431</span> excluding comments and blanks
+  the host page     <span class="wht">433</span> lines   framebuffer, palette shader, transport
+  source total      <span class="wht">410 KB</span>      of text, for the whole demo</pre>
+
+<p>Twenty modules for nineteen parts: the twentieth is the hidden one the loader
+never calls. It is nevertheless <b>bigger to download</b> than the original was:</p>
+
+<pre>  source               410 KB     assets            4,005 KB
+  libopenmpt         1,490 KB     chiptune3            17 KB
+                                  <span class="dim">─────────────────────</span>
+                                  <b>total</b>            <b>5.78 MB</b>  <span class="dim">vs 2.33</span></pre>
+
+<p>The display costs nothing on that list: it is forty lines of WebGL2, written
+against the browser directly, with no graphics library behind it.</p>
+
+<p>Which is the point. Future Crew stored the art as planar bitmaps inside
+PKLITE’d executables and played the music with STMIK — 24,849 bytes, resident
+across every part. The port keeps the art decompressed and plays the music with a
+general-purpose engine <b>sixty-one times</b> STMIK’s size, because nothing here
+has to fit anywhere.</p>
+
+<div class="menu" id="m"></div>
+</div></div>
+<script type="module">
+import { chrome, menu, setStatus } from './bbs.js';
+document.getElementById('m').innerHTML = menu([
+  { key: 'E', file: 'tech-verify.html', title: 'How it is verified', desc: 'next topic' },
+]);
+chrome({ title: 'What the port comes to' });
+setStatus('6,431 LINES OF JAVASCRIPT');
+</script></body></html>

@@ -1,0 +1,52 @@
+This is free and unencumbered software released into the public domain.
+
+Anyone is free to copy, modify, publish, use, compile, sell, or
+distribute this software, either in source code form or as a compiled
+binary, for any purpose, commercial or non-commercial, and by any
+means.
+
+In jurisdictions that recognize copyright laws, the author or authors
+of this software dedicate any and all copyright interest in the
+software to the public domain. We make this dedication for the benefit
+of the public at large and to the detriment of our heirs and
+successors. We intend this dedication to be an overt act of
+relinquishment in perpetuity of all present and future rights to this
+software under copyright law.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+For more information, please refer to <https://unlicense.org/>
+
+---
+
+WHAT THIS COVERS
+
+The browser port in unreal2/, the earlier standalone glenz-vectors port in
+glenz-web/, the tools under both, and the site served from the repository
+root are released into the public domain under the terms above. Take them,
+fork them, ship them, sell them — no attribution required.
+
+The original 1993 Second Reality source, data and executables that this
+repository also contains were released into the public domain by Future Crew
+themselves for the demo's 20th anniversary in 2013, under this same Unlicense.
+See docs/README-futurecrew.md for their own statement.
+
+So the entire repository is public domain, top to bottom. The only things NOT
+covered are third-party components that carry their own (also permissive)
+licences:
+
+  unreal2/vendor/libopenmpt*     libopenmpt, BSD-2-Clause
+  unreal2/vendor/chiptune3*      chiptune2/3.js, MIT
+  glenz-web/vendor/libopenmpt*   libopenmpt, BSD-2-Clause
+  glenz-web/vendor/chiptune3*    chiptune2/3.js, MIT
+  glenz-web/vendor/three*        three.js, MIT
+
+and, on the site pages only, the photographs of people, which remain the
+property of their respective copyright holders and are used with attribution
+recorded next to each image.

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>Assets — Second Reality</title><meta name="description" content="Most of Second Reality's artwork was linked into its executables as data, not saved as image files. How it was recovered, and why the port loads the original bytes.">
+<link rel="canonical" href="https://www.secondreality1993.com/tech-assets.html">
+<meta property="og:title" content="Asset archaeology — Second Reality by Future Crew">
+<meta property="og:description" content="Most of Second Reality's artwork was linked into its executables as data, not saved as image files. How it was recovered, and why the port loads the original bytes.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.secondreality1993.com/tech-assets.html">
+<meta property="og:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY.">
+<meta property="og:site_name" content="Second Reality">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Asset archaeology — Second Reality by Future Crew">
+<meta name="twitter:description" content="Most of Second Reality's artwork was linked into its executables as data, not saved as image files. How it was recovered, and why the port loads the original bytes.">
+<meta name="twitter:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta name="twitter:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY.">
+<link rel="stylesheet" href="bbs.css"></head>
+<body><div class="crt"><div class="body">
+
+<p class="yel">ASSET ARCHAEOLOGY</p>
+
+<p>Much of the art is not in image files. It is <b>linked into the executables</b>
+as data segments assembled from generated include files, so recovering it means
+reading OMF object records.</p>
+
+<pre>  <span class="cyn">.OBK / .OBJ</span>   the interference rings, the forest, the end logo and
+                all 21 credits paintings live inside LEDATA records as
+                raw bitmaps.
+
+  <span class="cyn">.EXE</span>          two parts had to be identified by unpacking the
+                shipped executables — PKLITE, sometimes with LZEXE
+                underneath — and disassembling them.</pre>
+
+<p>That is how we know <span class="cyn">3DSINFLD.EXE</span> is not the program in
+the <span class="cyn">GRID/</span> directory at all: it is
+<span class="cyn">COMAN/</span>, renamed at build time.</p>
+
+<p>It is also how the finished credits artwork was recovered. Seven of the 21
+pictures in the development objects are placeholders; the shipped executable has
+the real ones. Where a picture exists both as a linked object and as a re-exported
+GIF beside it, the object is the original — the GIF has been re-quantised.</p>
+
+<p>Every asset the port consumes is regenerated from the release by a tool in
+<span class="cyn">unreal2/tools/</span>, so nothing in the repository is a
+binary of unknown origin.</p>
+
+<p class="grn">WHAT THE PORT LOADS</p>
+<p>83 files, about 4 MB, in <span class="cyn">unreal2/assets/</span> — and
+<b>not one of them is an image file</b>:</p>
+
+<pre>  <span class="cyn">.bin</span>  62   raw bitmaps and tables, as they sat in the objects
+             <span class="dim">(21 of those are the credits paintings, in cred/)</span>
+  <span class="cyn">.dat</span>   8   the original's precomputed tables, shipped verbatim
+  <span class="cyn">.up</span>    3   packed pictures, still packed
+  <span class="cyn">.json</span>  3   geometry and constants recovered from the executables
+  <span class="cyn">.s3m</span>   2   the two modules, still scrambled
+  <span class="cyn">.sci .clx .fli .txt</span>        one or two each, all as shipped</pre>
+
+<p>Nothing was converted to PNG, re-quantised, or re-encoded on the way in. The
+port fetches these as raw bytes and does the unpacking <i>at runtime</i>, with the
+original's own routines: <span class="cyn">PRAX4.FLI</span> is decoded frame by
+frame the way PAM decoded it, the <span class="cyn">.UP</span> pictures are unpacked
+the way the parts unpacked them, the S3Ms are descrambled in memory.</p>
+
+<p>The reason is not purity. It is that a converted asset is a second opinion about
+what the original meant — a re-quantised palette, a resampled row — and the port has
+no way to notice when that opinion is wrong. Raw bytes plus the original's own
+decoder either produce the release's picture or fail loudly.</p>
+
+<div class="menu" id="m"></div>
+</div></div>
+<script type="module">
+import { chrome, menu } from './bbs.js';
+document.getElementById('m').innerHTML = menu([
+  { key: 'E', file: 'tech-verify.html', title: 'How it is verified', desc: 'next topic' },
+]);
+chrome({ title: 'Assets' });
+</script></body></html>

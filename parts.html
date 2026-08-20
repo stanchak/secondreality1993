@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>Every part of Second Reality</title>
+<meta name="description" content="The 19 parts of Future Crew's Second Reality, in order, with who wrote each one. Jump to any part.">
+<link rel="canonical" href="https://www.secondreality1993.com/parts.html">
+<meta property="og:title" content="Every part of Second Reality">
+<meta property="og:description" content="The 19 parts of Future Crew's Second Reality, in order, with who wrote each one. Jump to any part.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.secondreality1993.com/parts.html">
+<meta property="og:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY.">
+<meta property="og:site_name" content="Second Reality">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Every part of Second Reality">
+<meta name="twitter:description" content="The 19 parts of Future Crew's Second Reality, in order, with who wrote each one. Jump to any part.">
+<meta name="twitter:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta name="twitter:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY.">
+<link rel="stylesheet" href="bbs.css">
+<style>
+  /* A file listing, which is what a BBS was for. Fixed columns, one row per
+     part, the row itself the thing you press. */
+  .plist a { white-space: pre; }
+  .plist .hd { color: #000; background: var(--cyn); white-space: pre; padding: 0 0.3em; }
+  .plist .n { color: var(--yel); }
+  .plist .nm { color: var(--bcyn); }
+  .plist .ex { color: var(--gry); }
+  .plist .fi { color: var(--dgy); }
+  .plist a:hover .n, .plist a.sel .n { color: var(--yel); }
+  .plist a:hover .nm, .plist a:hover .ex, .plist a:hover .fi,
+  .plist a.sel .nm, .plist a.sel .ex, .plist a.sel .fi { color: var(--wht); }
+</style></head>
+<body><div class="crt"><div class="body">
+
+<div class="menu plist" id="p"></div>
+<p class="dim" id="foot"></p>
+
+</div></div>
+<script type="module">
+import { chrome, setStatus } from './bbs.js';
+
+// The loader's own chain, in order, from MAIN/U2.ASM — which carries the part
+// names as comments beside each executable it loads:
+//
+//   ;txt6   db      'Techno (PSI)                ',0
+//   exe6                                          db 'TECHNO.EXE',0
+//
+// so the working titles and the credits below are the crew's, not a guess. Two
+// entries share one executable where the loader's comment does (ALKU draws the
+// title cards and then the panorama; LNS&ZOOM and PLZPART are each two named
+// parts built into one exe). `slug` matches PART_SLUG in unreal2/main.js.
+const PARTS = [
+  ['cards',    'TITLE CARDS',      'ALKU.EXE',     'ALKU/',    'WILDF',      'Alkutekstit I'],
+  ['panorama', 'PANORAMA+CREDITS', 'ALKU.EXE',     'ALKU/',    'WILDF',      'Alkutekstit I'],
+  ['ship',     'SHIP FLYBY',       'U2A.EXE',      'VISU/',    'PSI',        'Alkutekstit II'],
+  ['moon',     'MOON EXPLOSION',   'PAM.EXE',      'PAM/',     'TRUG/WILDF', 'Alkutekstit III'],
+  ['logo',     'SECOND REALITY',   'BEGLOGO.EXE',  'BEG/',     'TRUG/WILDF', 'Alkutekstit III'],
+  ['glenz',    'GLENZ VECTORS',    'GLENZ.EXE',    'GLENZ/',   'PSI',        'Glenz'],
+  ['tunnel',   'DOT TUNNEL',       'TUNNELI.EXE',  'TUNNELI/', 'TRUG',       'Dottitunneli'],
+  ['techno',   'TECHNO',           'TECHNO.EXE',   'TECHNO/',  'PSI',        'Techno'],
+  ['panic',    'PANICEND',         'PANICEND.EXE', 'PANIC/',   'WILDF',      'Panicfake'],
+  ['mntscrl',  'MOUNTAIN SCROLL',  'MNTSCRL.EXE',  'FOREST/',  'TRUG',       'Vuori-Scrolli'],
+  ['lens',     'LENS + ROTAZOOM',  'LNS&ZOOM.EXE', 'LENS/',    'PSI',        'Lens · Rotazoomer'],
+  ['plasma',   'PLASMA + CUBE',    'PLZPART.EXE',  'PLZPART/', 'WILDF',      'Plasma · Plasmacube'],
+  ['minvball', 'MINI VECTORBALLS', 'MINVBALL.EXE', 'DOTS/',    'PSI',        'MiniVectorBalls'],
+  ['rayscrl',  'WATER RAYTRACER',  'RAYSCRL.EXE',  'WATER/',   'TRUG',       'Peilipalloscroll'],
+  ['sinfield', '3D SINEFIELD',     '3DSINFLD.EXE', 'COMAN/',   'PSI',        '3D-Sinusfield'],
+  ['jellypic', 'JELLY LOGO',       'JPLOGO.EXE',   'JPLOGO/',  'PSI',        'Jellypic'],
+  ['u2e',      'VECTOR PART II',   'U2E.EXE',      'VISU/',    'PSI',        'Vector Part II'],
+  ['endlogo',  'END PICTURE',      'ENDLOGO.EXE',  'END/',     '?',          'Endpictureflash'],
+  ['credits',  'CREDITS',          'CRED.EXE',     'CREDITS/', '?',          'Credits/Greetings'],
+  ['endscrl',  'END SCROLLER',     'ENDSCRL.EXE',  'ENDSCRL/', '?',          'Credits/Greetings'],
+];
+
+const pad = (s, n) => String(s).padEnd(n).slice(0, n);
+const row = ([slug, name, exe, dir, by, fi], i) =>
+  `<a href="?part=${slug}" title="start the demo at ${name}">` +
+  `<span class="n">${String(i + 1).padStart(2, '0')}</span> ` +
+  `<span class="nm">${pad(name, 16)}</span> ` +
+  `<span class="ex">${pad(exe, 12)} ${pad(dir, 9)} ${pad(by, 11)}</span>` +
+  `<span class="fi">${fi}</span></a>`;
+
+// DDSTARS is in the archive but not in the chain: the loader reaches it only
+// through the undocumented `SECOND U`. Listed last, marked, and not numbered
+// with the rest, because it is not part of the run.
+const HIDDEN =
+  `<a href="?part=hidden" title="the part the loader never runs">` +
+  `<span class="n">··</span> <span class="nm">${pad('HIDDEN PART', 16)}</span> ` +
+  `<span class="ex">${pad('DDSTARS.EXE', 12)} ${pad('DDSTARS/', 9)} ${pad('PSI', 11)}</span>` +
+  `<span class="fi">Desert Dream Stars</span></a>`;
+
+document.getElementById('p').innerHTML =
+  `<div class="hd">${pad('## PART', 20)}${pad('EXECUTABLE', 13)}` +
+  `${pad('SOURCE', 10)}${pad('BY', 11)}WORKING TITLE (1993)</div>` +
+  PARTS.map(row).join('') + HIDDEN;
+
+document.getElementById('foot').innerHTML =
+  '<span class="cyn">ENTER</span> or click starts the demo at that part, and ' +
+  '<span class="cyn">/?part=techno</span> is a link you can send. The last row ' +
+  'is the one the loader never calls — see <span class="cyn">/u</span>.';
+
+chrome({ title: 'Parts' });
+setStatus('19 IN THE CHAIN · 1 NEVER CALLED');
+</script></body></html>

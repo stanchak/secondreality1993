@@ -1,0 +1,219 @@
+        S:E:C:O:N:D:::R:E:A:L:I:T:Y:
+
+[leffamusaa]
+
+- Setup screeni grafiikkatilaan, joka näyttää tekstiltä
+- Kun stuhvit valittu, lentää polygoniface kohti katsojaa muuttaen
+  ruudun valkoiseksi
+- hidas fade mustaksi
+- leffatyylitekstit mustalla
+
+"            A
+"   FUTURE CREW
+"   production
+    
+"   First presented at
+"   Assembly '93 
+    
+    fade leveään horisonttikuvaan 960x480
+    ^himmeä reunoilta, widescreen (35mm-70mm)
+    kuva alkaa scrollata hitaasti vasemmalle
+    tekstit päällä,eivät scrollaa
+    
+"       Graphics by ...
+
+    jyrinä alkaa voimistua hiljalleen (surround)
+    
+"       Music by ...
+
+    ...
+    
+    Music By:n kohdassa ylimassiivista musaa
+    ja ylisiistiä grafua.. jokapuolella
+    välkkyy Purple Motion ja tämän jälkeen
+    infraääni ylitse muiden hajoittaa kaiuttimet
+    ja kaikki koulun ikkunat.. loppujen lopuksi
+    partylaisten sydämet tahdistuvat bassobeatin tahtiin
+    ja kun sitten musiikki epätahdistuu, koko demoscene saa
+    yhden ison sydänkohtauksen ja kuolee pois..
+    lopulta demokone räjähtää ja sytyttää koko koulun tuleen
+    ja hävittää näin kaiken todistusaineiston..
+    
+"       Code by ...
+    
+    jyrinä ns. täysillä
+    suuri vektorialus lentää yli, pohjassa erikoisdetailia
+    500 polygonia
+    lentää horisonttiin lujaa
+    välähtää rengasvallina, kuten Startrek VI:n alussa Praxis
+    välähdys kasvaa ja lentää kohti katsojaa (surround)
+    ruutu välähtää
+[pamaus, technoksi]
+    nopea fade, ensin logo mustavalkoiseen ja sitten värit.
+    
+    ruutu pyörähtää ympäri (precalc alkutekstien aikana)
+    
+    45 asteen käännös, lopuksi näkyy vain ruudun 'reuna'
+    
+    toiselle puolelle levyä 8 värin kuvio
+    
+    taso laskeutuu alaspäin jolloin päällä oleva kuva paljastuu
+    
+    jellyglenz tippuu (precalc)
+    
+    kun glenzi pysähtyy, shakkilauta laskeutuu pois ruudusta,
+    glenz pysyy paikallaan.
+    
+    toinen glenz tulee ruutuun korvaten shakkilaudan värit
+    
+    toinen glenzi lentää pois
+
+    toinen pienenee ruudun keskelle
+    
+    ympärille tulee trugin dottitunneli (lineblit?)
+
+    slerssin tunneli perään
+
+    MCGA=>EGA
+    
+    teknopartti
+    
+    lopulta kolme vinoa palkkia jää ruutuun. reunimmaiset
+    scrollaavat pois, keskimmäinen muuttu 2D vektorianimaatioksi
+    ala SpaceBalls (delaylla). Animaation aihe on: paikallaan 
+    juokseva kissa (autodeskistä). Animaation morphautuessa
+    neliöstä tulee schhrlurchtsphssht ääniefekti. Kissa 
+    juoksee paikallaan ja zoomatuu, kun sopivan kokeinen,
+    stensiloituu kivasti.
+
+    taukoa, kuva muuttuu dotiksi kuten panicin lopussa, musa
+    loppuu.
+    
+    tauko (15 sec etc)
+    EGA=>MCGA
+    
+[musa muuttuu]
+        
+    avaruusvektoripartti.   
+
+    dotin kohdasta lentää vektoriobjekti (sama kuin alku)
+
+    objektin perästä tulevat tähdet (out of hyperspace style)
+
+    objekti kaartaa katsojan ympäri (surround kierto) 
+    
+    kamera menee trackkaamaan
+    
+    kamera menee asteroidin pinnalle (leikkaus)
+    asteroidin pinnalla kamera paikallaan (horisonttibitmap)
+    
+    laukaistaan kahta erilaista hyökkäysalusta
+    
+    kamera takaisin ison alukseen, kulmasta jossa asteroidi/alukset
+    näkyvät taustalla (asteroidi bitmap)
+    
+    hyökkääjät lähestyvät
+    
+    kamera katsoo omaa alusta hyökkääjien takaa
+    
+    kamera siirtyy oman aluksen sivulta
+    
+    laukaistaan puolustajat
+    
+    kaukaa kuva kun alukset lähestyvät
+    
+    alkaa taistelu. trackkaillan omia aluksia, omat ampuvat Xwing
+    tyylisiä paukkuja, välillä paikallaan olevaa kuvaa kauempaa.
+    (unrealin vektoripartin tyyppistä nopeaa)
+
+    ensin yksi vihollinen ohjuksella
+
+    yksi omista tuhoutuu, musa ottaa huomioon, tauko
+    
+    viholliset tuhoutuvat kaikki lähes samaan aikaan.
+    
+    hävittäjä vetää voltit kohti kameraa 
+    
+    musa rauhallistuu, kuva kaukaa, iso alus lentää kohti
+    
+    fade mustaan
+    
+[musa demoistuu,ei teknoksikuitenkaan...]
+
+    peiliscroll
+    - shakkilauta fadetaan kivasti
+    - pallo laskeuttuu
+    - scrolli alkaa "we have something to say"
+    
+    - pallo välähtää dottipalloksi
+    - dottipallo leveää uudunkokoiseksi
+    - pisteet tasaiseksi gridiksi 
+    - pisteet paisuvat täyttäen taustan valkoiseksi
+
+    MCGA=>EGA
+     
+    desert dream stars
+    - loppuu siten että vektoricube lentää kohti ja täyttää ruudun
+    - cube on lightsource siten että musta kameraan päin
+    - ruutu lopuksi musta
+    
+    smoke
+    - hetkellinen 
+
+    EGA=>MCGA
+ 
+    Sinuslines 3D
+    - mustalla ruuulla kamera kääntyile
+    - alkaa tyhjästä, pituus kasvaa
+    - poistuu menemällä alhaalta ulos
+
+    Siisti kuva!
+    - kuva tippuu desert dreams tyyliin
+    - tauko
+    
+    Linssi
+    - pomppii ohi
+    - kaksi pomppua maahan
+    - 3 väri shade
+    - kuva fadeautuu valkoiseksi    
+
+    Fullscreen kouru
+    - fadeautuu valkoisesta
+    Plasmacube
+    - ilmestyy yläreunaan
+    - menee keskelle
+    - kouru loppuu
+    - cube suurenee
+    - cube tuplaantuu
+    - lopputulos musta ruutu
+
+    - kamera laskeutuu alaspäin jolloin minivectorballsin lattia
+      ilmestyy
+    Minivectorballs
+    - kaikkea kivaa
+    - pomppuja etc
+    
+    Vuoriscroll
+    - vuori nousee minivectorballsin tason läpi
+    - scrolli ilmesty
+
+    Comanche canyon (water waves)
+    - aaltoileva merenpinta, kamera kiertää
+    - kamera nousee
+    - taivas tummene
+    
+[leffamusaa]
+
+    Uusi kuvakulma tähdillä ja alun aluksella
+    
+    
+    
+-- Thanks for watching + lopputekstit --
+
+other ideas:
+;uusi vuosi bang
+;pyörivä tulisuihku joka polttaa maan ympäriltä)
+;shadebobs
+;2D jelloblock
+;dotcuberise
+

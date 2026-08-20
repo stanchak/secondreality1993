@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>The music of Second Reality</title>
+<meta name="description" content="The two S3M modules that drive Second Reality, and how the visuals lock to the tracker.">
+<link rel="canonical" href="https://www.secondreality1993.com/tech-music.html">
+<meta property="og:title" content="The music of Second Reality">
+<meta property="og:description" content="The two S3M modules that drive Second Reality, and how the visuals lock to the tracker.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.secondreality1993.com/tech-music.html">
+<meta property="og:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY.">
+<meta property="og:site_name" content="Second Reality">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The music of Second Reality">
+<meta name="twitter:description" content="The two S3M modules that drive Second Reality, and how the visuals lock to the tracker.">
+<meta name="twitter:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta name="twitter:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY."><link rel="stylesheet" href="bbs.css"></head>
+<body><div class="crt"><div class="body">
+
+<p class="yel">HOW THE MUSIC WORKS</p>
+
+<p>The demo ships two S3M modules by Purple Motion and plays them through
+<b>STMIK</b>, Future Crew's own player, resident in memory across every part.
+The port replaces STMIK with libopenmpt in an AudioWorklet, but everything
+around it is reproduced.</p>
+
+<p class="grn">IT IS COPY-PROTECTED</p>
+<p>The .s3m files in the release are <b>scrambled</b>. Each pattern's data is
+XORed with a key derived from its byte offset, so the files load in a tracker as
+garbage. <span class="cyn">STARTMUS.C</span> unscrambles them in memory at start-up;
+the port runs the same routine in the browser before the bytes reach the player.
+The files on disk are never modified.</p>
+
+<p class="grn">THE TEMPO IS PATCHED AT RUNTIME</p>
+<p>STARTMUS.C also writes one byte — module offset 50, the initial tempo — from
+125 down to <b>120 BPM</b> before playback. Every music-derived timing constant in
+the demo is therefore in <i>patched</i> time, 25/24 slower than the file suggests.</p>
+
+<p class="grn">TWO MODULES, ONE TIMELINE</p>
+<p>MUSIC0 carries the intro. The loader itself, not any part, switches to MUSIC1
+the instant the title logo finishes — so the demo's clock is MUSIC0's elapsed time
+up to that point and MUSIC1's after it.</p>
+
+<p class="grn">HOW THE PORT UNSCRAMBLES IT</p>
+<p>The <span class="cyn">.s3m</span> files in <span class="cyn">unreal2/assets/</span>
+are the release's own bytes, still scrambled. Nothing was unscrambled and checked in
+— the demo would not be shipping its own protection if it had been. The whole
+sequence happens after the fetch, in this order:</p>
+
+<pre>  <span class="cyn">1. patch</span>      byte 50 = 0x78. The tempo patch, before anything
+                else, because every later number is in patched time.
+
+  <span class="cyn">2. descramble</span> walk the pattern-pointer table at 0x60 + orders +
+                instruments*2, and for each pattern XOR its body
+                with the keystream STARTMUS.C used:
+
+                    n = (i &gt;&gt; 1) + 1
+                    key(i) = ((n ^ (n &gt;&gt; 2)) &lt;&lt; 3) | ((5i + 2) &amp; 7)
+
+                i counts from the pattern's first byte, so the key
+                restarts at every pattern.
+
+  <span class="cyn">3. play</span>       hand the descrambled buffer to libopenmpt running
+                in an AudioWorklet, and read the clock back off the
+                worklet's reported position.</pre>
+
+<p>The buffer is descrambled in place, in memory, exactly as
+<span class="cyn">STARTMUS.C</span> did it — the file on disk is never rewritten. The
+same <span class="cyn">descramble()</span> feeds the offline timeline simulator in
+<span class="cyn">s3msim.js</span>, which is where the sync gates come from, so the
+music the browser plays and the music the timings were derived from cannot drift
+apart.</p>
+
+<p class="grn">THE TRACKER ON THIS BOARD IS THE SAME ENGINE</p>
+<p>The <span class="cyn">Play the music</span> screen is a working ST3 playing these
+two modules, and it is not a second implementation of any of the above. It imports
+the demo's own pieces:</p>
+
+<pre>  <span class="cyn">the files</span>      unreal2/assets/music0.s3m — the very bytes the
+                 demo loads, still scrambled on disk
+  <span class="cyn">descramble()</span>   imported from s3msim.js, the same routine
+  <span class="cyn">buildTimeline()</span> also from s3msim.js, for exact song length
+  <span class="cyn">the engine</span>     libopenmpt in the same AudioWorklet</pre>
+
+<p>What it adds is a <b>reader</b>. <span class="cyn">s3msim.js</span> decodes only
+the cells that affect tempo, because tempo is all the demo needs to know to place
+its gates; a pattern display needs notes, instruments, volumes and effects, so the
+tracker page carries a full S3M parser of its own.</p>
+
+<p>The display is <b>slaved to the audio</b>, the same trick the demo's visuals
+use. The worklet reports its order, pattern and row back on every audio block, and
+the highlighted row is whatever that feed says — so what you are watching is the
+playing position, not a re-simulation of it running alongside and hoping to agree.
+The same reason the demo's wipes land on the beat is the reason this cursor lands
+on the right row.</p>
+
+<div class="menu" id="m"></div>
+</div></div>
+<script type="module">
+import { chrome, menu } from './bbs.js';
+document.getElementById('m').innerHTML = menu([
+  { key: 'A', file: 'tech-timing.html', title: 'How visuals follow it', desc: 'the sync gates' },
+  { key: '2', file: 'tracker.html',     title: 'Play the music',        desc: 'this engine, with a pattern grid' },
+]);
+chrome({ title: 'The music' });
+</script></body></html>

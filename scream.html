@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>Scream Tracker and S3M — Future Crew</title>
+<meta name="description" content="Scream Tracker 3 and the S3M format, written by Psi of Future Crew. How Second Reality's music is sequenced.">
+<link rel="canonical" href="https://www.secondreality1993.com/scream.html">
+<meta property="og:title" content="Scream Tracker and S3M — Future Crew">
+<meta property="og:description" content="Scream Tracker 3 and the S3M format, written by Psi of Future Crew. How Second Reality's music is sequenced.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.secondreality1993.com/scream.html">
+<meta property="og:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY.">
+<meta property="og:site_name" content="Second Reality">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Scream Tracker and S3M — Future Crew">
+<meta name="twitter:description" content="Scream Tracker 3 and the S3M format, written by Psi of Future Crew. How Second Reality's music is sequenced.">
+<meta name="twitter:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta name="twitter:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY."><link rel="stylesheet" href="bbs.css"></head>
+<body><div class="crt"><div class="body">
+
+<h1 class="yel">SCREAM TRACKER</h1>
+
+<p>A tracker is a music program where the song is a grid: time runs down the page
+in <b>rows</b>, each channel gets a column, and every cell holds a note, an
+instrument, a volume and an effect. You are not recording a performance — you are
+writing a small program that plays samples.</p>
+
+<p><b>Scream Tracker</b> was written by <span class="cyn">Sami Tammilehto</span> —
+Psi, the same person who wrote most of Second Reality’s engine — modelled on the
+Amiga’s Soundtracker, in C and assembly.</p>
+
+<pre>  <span class="grn">1990</span>  version 2.2, the first widely used release        <span class="dim">.STM files</span>
+  <span class="grn">1994</span>  version 3, and the format that mattered           <span class="dim">.S3M, 18 April</span>
+  <span class="grn">1994</span>  version 3.21 — the tracker’s last release, and
+        Future Crew’s last release of any kind</pre>
+
+<p>Its influence outran the program. ST3’s interface is the direct ancestor of
+Impulse Tracker’s, and S3M became a format the whole scene supported — modern
+players still read it, including the one on this board.</p>
+
+<p class="grn">SECOND REALITY’S MUSIC</p>
+<p>Two S3M modules, both by Purple Motion. <span class="cyn">MUSIC0</span> is
+“UnreaL ][ - The 2ND Reality”, which carries the intro; <span class="cyn">MUSIC1</span>
+takes over at the glenz vectors. The demo’s visuals are slaved to the music’s own
+position rather than to a clock, which is why the wipes land on the beat.</p>
+
+<p class="grn">AND IT PLAYS, ON THE NEXT SCREEN</p>
+<p><span class="cyn">[2]</span> is not a picture of a tracker. It is
+<b>ST3 playing Second Reality’s own two modules</b> — the same files the demo
+plays, read out of the same directory, and it sounds because it is being played
+rather than described.</p>
+
+<p>The pattern grid you watch is the grid being played: the highlighted row is
+whatever row the <b>audio engine</b> says it is on, reported back from the audio
+thread, not a second copy of the song being simulated alongside it. Scroll the
+channels, hold one pattern the way ST3’s play-pattern key does, step the order
+list, switch modules mid-note.</p>
+
+<p>Including the part of MUSIC0 nobody was meant to reach: the order list has a
+<span class="cyn">255</span> “---” terminator with <b>another sequence sitting
+behind it</b>, which ordinary playback stops short of. The demo jumps into it
+deliberately. On this board it is simply in the list, and you can play it.</p>
+
+<div class="menu" id="m"></div>
+</div></div>
+<script type="module">
+import { chrome, menu } from './bbs.js';
+document.getElementById('m').innerHTML = menu([
+  { key: '2', file: 'tracker.html', title: 'Play the music', desc: 'ST3, playing the real modules' },
+]);
+chrome({ title: 'Scream Tracker' });
+</script></body></html>

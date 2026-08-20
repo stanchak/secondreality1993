@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>System information — Second Reality</title>
+<meta name="robots" content="noindex"><link rel="stylesheet" href="bbs.css"></head>
+<body><div class="crt"><div class="body">
+
+<p class="yel">SYSTEM INFORMATION</p>
+
+<pre>  <span class="cyn">THE ORIGINAL</span>    <span class="dim">node 1 · 2400 baud is fictional; the rest is not</span>
+    released      Assembly '93, Helsinki, 30 July 1993
+    distributed   7 October 1993, as two ZIPs
+    shipped size  2,443,265 bytes in two files
+    source drop   2013, public domain (Unlicense)
+    files         1,530 in the release
+    parts         19 chain-loaded DOS executables — and one the
+                  loader never calls, which is what /u is about
+
+  <span class="cyn">THE PORT</span>
+    modules       20 JavaScript files, 9,188 lines
+                  (6,431 excluding comments and blanks)
+    tools         24 extractors and validators
+    validators    9, all deterministic, all passing
+    assets        83 files, 3.91 MB — every one regenerated from
+                  the release by a tool in unreal2/tools/
+    emulation     none
+  <span class="cyn">MUSIC</span>
+    MUSIC0.S3M    1:59 · 8 channels · UnreaL ][ - The 2ND Reality
+    MUSIC1.S3M    6:44 · 15 channels
+    protection    XOR-scrambled patterns, undone in the browser</pre>
+
+<div class="menu" id="m"></div>
+</div></div>
+<script type="module">
+import { chrome, menu } from './bbs.js';
+document.getElementById('m').innerHTML = menu([
+  { key: 'X', file: 'hidden.html',  title: 'The other hidden screens', desc: 'six more' },
+  { key: '9', file: 'credits.html', title: 'Credits',                  desc: 'who made this' },
+]);
+chrome({ title: 'System information' });
+</script></body></html>

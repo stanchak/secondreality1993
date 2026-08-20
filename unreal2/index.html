@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Second Reality (browser port)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="../img/icon-180.png">
+<link rel="icon" href="../favicon.ico" sizes="32x32">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<style>
+  html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+  body { display: flex; align-items: center; justify-content: center; }
+  #screen { image-rendering: pixelated; display: block; margin: 0 auto; }
+
+  /* The demo opens on ~16 seconds of black, which reads as "nothing is
+     happening" if you have not seen it before. Say so, and say it near the top
+     so it cannot collide with the centred press-any-key prompt. Removed once
+     the demo's own clock passes the first title card. */
+  #startNote {
+    position: fixed; top: 18px; left: 0; right: 0; z-index: 25;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    font-family: "Courier New", monospace; text-align: center;
+    pointer-events: none; user-select: none;
+    transition: opacity 1.4s ease-out;
+  }
+  #startNote b {
+    color: #ffe14d; font-size: 13px; letter-spacing: 3px;
+    text-shadow: 0 0 8px rgba(255,225,77,.6);
+  }
+  #startNote span { color: #8a8fb0; font-size: 11px; letter-spacing: 1px; }
+  #overlay {
+    position: fixed; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 16px;
+    background: rgba(0,0,0,.55); color: #ccc; cursor: pointer;
+    font-family: "Courier New", monospace; z-index: 10; user-select: none;
+  }
+  #overlay .msg { font-size: 22px; letter-spacing: 4px; color: #fff; }
+  #overlay .sub { font-size: 12px; color: #888; max-width: 480px; text-align: center; line-height: 1.6; }
+  #overlay.ready .msg { animation: blink 1.2s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: .25; } }
+
+  /* ---------------------------------------------------------------- *
+   *  90s / demoscene ".NFO" about panel                              *
+   * ---------------------------------------------------------------- */
+  #aboutBtn {
+    position: fixed; top: 14px; right: 14px; z-index: 30;
+    width: 34px; height: 34px; cursor: pointer;
+    font-family: "Courier New", monospace; font-weight: bold; font-size: 18px;
+    color: #ffe14d; background: linear-gradient(#2a2a55, #14142e);
+    border-top: 2px solid #6f6fd0; border-left: 2px solid #6f6fd0;
+    border-right: 2px solid #05050f; border-bottom: 2px solid #05050f;
+    display: flex; align-items: center; justify-content: center;
+    text-shadow: 0 0 6px #ffe14d; box-shadow: 0 0 10px rgba(120,120,255,.4);
+    user-select: none;
+  }
+  #aboutBtn:hover { color: #fff; text-shadow: 0 0 10px #fff; background: linear-gradient(#3a3a75, #20204a); }
+  #aboutBtn:active { border-color: #05050f #6f6fd0 #6f6fd0 #05050f; }
+
+  /* back to the board — same bevel, sits left of the about button */
+  #bbsBtn {
+    position: fixed; top: 14px; right: 56px; z-index: 30;
+    height: 34px; padding: 0 10px; cursor: pointer;
+    font-family: "Courier New", monospace; font-weight: bold; font-size: 12px;
+    letter-spacing: 2px; text-decoration: none;
+    color: #55ffff; background: linear-gradient(#2a2a55, #14142e);
+    border-top: 2px solid #6f6fd0; border-left: 2px solid #6f6fd0;
+    border-right: 2px solid #05050f; border-bottom: 2px solid #05050f;
+    display: flex; align-items: center; justify-content: center;
+    text-shadow: 0 0 6px #55ffff; box-shadow: 0 0 10px rgba(120,120,255,.4);
+    user-select: none;
+  }
+  #bbsBtn:hover { color: #fff; text-shadow: 0 0 10px #fff; background: linear-gradient(#3a3a75, #20204a); }
+  #bbsBtn:active { border-color: #05050f #6f6fd0 #6f6fd0 #05050f; }
+
+  /* fullscreen toggle — same bevel style, bottom right */
+  #fsBtn {
+    position: fixed; bottom: 14px; right: 14px; z-index: 30;
+    width: 34px; height: 34px; cursor: pointer;
+    font-family: "Courier New", monospace; font-weight: bold; font-size: 16px;
+    color: #ffe14d; background: linear-gradient(#2a2a55, #14142e);
+    border-top: 2px solid #6f6fd0; border-left: 2px solid #6f6fd0;
+    border-right: 2px solid #05050f; border-bottom: 2px solid #05050f;
+    display: flex; align-items: center; justify-content: center;
+    text-shadow: 0 0 6px #ffe14d; box-shadow: 0 0 10px rgba(120,120,255,.4);
+    user-select: none;
+  }
+  #fsBtn:hover { color: #fff; text-shadow: 0 0 10px #fff; background: linear-gradient(#3a3a75, #20204a); }
+  #fsBtn:active { border-color: #05050f #6f6fd0 #6f6fd0 #05050f; }
+
+  /* fullscreen auto-hide: fade the chrome after 2s of mouse inactivity */
+  #aboutBtn, #fsBtn, #parts { transition: opacity .35s; }
+  body.uihide #aboutBtn, body.uihide #fsBtn, body.uihide #parts { opacity: 0; pointer-events: none; }
+  body.uihide { cursor: none; }
+
+  /* part selector — beveled chips, bottom left (keys 1-5 too) */
+  #parts {
+    position: fixed; bottom: 14px; left: 14px; z-index: 30;
+    display: flex; gap: 6px; user-select: none;
+  }
+  .pbtn {
+    cursor: pointer; padding: 6px 10px;
+    font-family: "Courier New", monospace; font-weight: bold; font-size: 11px;
+    letter-spacing: 1px; color: #ffe14d; background: linear-gradient(#2a2a55, #14142e);
+    border-top: 2px solid #6f6fd0; border-left: 2px solid #6f6fd0;
+    border-right: 2px solid #05050f; border-bottom: 2px solid #05050f;
+    text-shadow: 0 0 6px rgba(255,225,77,.6);
+  }
+  .pbtn:hover { color: #fff; text-shadow: 0 0 10px #fff; background: linear-gradient(#3a3a75, #20204a); }
+  .pbtn:active { border-color: #05050f #6f6fd0 #6f6fd0 #05050f; }
+  .pname {
+    padding: 6px 12px; align-self: center;
+    font-family: "Courier New", monospace; font-weight: bold; font-size: 11px;
+    letter-spacing: 2px; color: #7dff9e; text-shadow: 0 0 8px rgba(125,255,158,.5);
+    background: rgba(10,10,30,.65);
+    border-top: 2px solid #05050f; border-left: 2px solid #05050f;
+    border-right: 2px solid #6f6fd0; border-bottom: 2px solid #6f6fd0;
+  }
+
+  /* Fingers. Every control gets to 44px and clears the safe areas, and the
+     transport stops trying to be a 90s toolbar at 11px. Same bevels, same
+     colours — just reachable. Must come after the rules it overrides: a media
+     query adds no specificity, so it only wins by being later. */
+  @media (pointer: coarse) {
+    #aboutBtn, #fsBtn { width: 46px; height: 46px; font-size: 22px; }
+    #aboutBtn { top: max(14px, env(safe-area-inset-top)); }
+    #bbsBtn {
+      height: 46px; padding: 0 16px; font-size: 14px;
+      top: max(14px, env(safe-area-inset-top)); right: 72px;
+    }
+    #fsBtn {
+      right: max(14px, env(safe-area-inset-right));
+      bottom: max(16px, env(safe-area-inset-bottom));
+    }
+    #parts {
+      gap: 10px;
+      left: max(14px, env(safe-area-inset-left));
+      bottom: max(16px, env(safe-area-inset-bottom));
+    }
+    .pbtn {
+      min-width: 52px; min-height: 46px; font-size: 15px; padding: 6px 12px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .pname { padding: 6px 14px; font-size: 12px; }
+  }
+
+  #about {
+    position: fixed; inset: 0; z-index: 40; display: none;
+    align-items: center; justify-content: center;
+    background:
+      repeating-linear-gradient(rgba(0,0,0,0) 0 2px, rgba(0,0,0,.28) 2px 4px),
+      radial-gradient(120% 120% at 50% 0%, #10102e 0%, #05050f 60%, #000 100%);
+    font-family: "Courier New", monospace;
+  }
+  #about.show { display: flex; }
+
+  .nfo {
+    width: min(760px, 92vw); max-height: 88vh; display: flex; flex-direction: column;
+    background: #0b0b1e; color: #cfe0ff;
+    border-top: 3px solid #7a7ae0; border-left: 3px solid #7a7ae0;
+    border-right: 3px solid #04040c; border-bottom: 3px solid #04040c;
+    box-shadow: 0 0 0 1px #000, 0 0 40px rgba(120,120,255,.35), 0 20px 60px rgba(0,0,0,.7);
+  }
+  .nfo-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 5px 8px; letter-spacing: 3px; font-weight: bold; font-size: 13px;
+    color: #fff; text-shadow: 0 0 6px #8ff;
+    background: linear-gradient(90deg, #d000d0, #3030c0 55%, #00c0c0);
+    border-bottom: 2px solid #04040c;
+  }
+  .nfo-bar .x {
+    cursor: pointer; padding: 0 7px; color: #fff; background: rgba(0,0,0,.35);
+    border-top: 2px solid #b0b0ff; border-left: 2px solid #b0b0ff;
+    border-right: 2px solid #000; border-bottom: 2px solid #000;
+  }
+  .nfo-bar .x:hover { background: #f33; }
+  .nfo-body { padding: 20px 26px 26px; overflow-y: auto; line-height: 1.65; font-size: 13.5px; }
+
+  .nfo-title {
+    font-size: 22px; font-weight: bold; letter-spacing: 2px; margin: 0 0 2px;
+    background: linear-gradient(90deg, #ff5cf0, #ffe14d 40%, #5cff9e 70%, #5ce1ff);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    text-shadow: 0 0 18px rgba(255,120,240,.25);
+  }
+  .nfo-sub { color: #8a8ac8; font-size: 12px; letter-spacing: 1px; margin: 0 0 16px; }
+  .nfo-rule { color: #45459a; user-select: none; margin: 14px 0 8px; overflow: hidden; white-space: nowrap; }
+  .nfo h3 {
+    margin: 0 0 6px; font-size: 13px; letter-spacing: 2px; color: #ffe14d;
+    text-shadow: 0 0 8px rgba(255,225,77,.4);
+  }
+  .nfo p { margin: 0 0 10px; }
+  .nfo b { color: #fff; }
+  .nfo .cy { color: #5ce1ff; }
+  .nfo .mg { color: #ff7cf0; }
+  .nfo .gn { color: #7dff9e; }
+  .nfo code {
+    color: #ffd27c; background: rgba(255,210,124,.08); padding: 0 4px; border-radius: 2px;
+    font-family: inherit;
+  }
+  .nfo .tip {
+    margin-top: 4px; padding: 8px 12px; color: #bfe0ff;
+    background: rgba(90,120,255,.10); border-left: 3px solid #5ce1ff;
+  }
+  .nfo-foot {
+    margin-top: 18px; padding-top: 10px; border-top: 1px dashed #33336a;
+    color: #8a8ac8; font-size: 12px; text-align: center; letter-spacing: 1px;
+  }
+  .nfo-foot .heart { color: #ff5c8a; }
+  .nfo-body::-webkit-scrollbar { width: 12px; }
+  .nfo-body::-webkit-scrollbar-track { background: #05050f; }
+  .nfo-body::-webkit-scrollbar-thumb {
+    background: linear-gradient(#5a5ac0, #2a2a70);
+    border-top: 2px solid #8080e0; border-left: 2px solid #8080e0;
+    border-right: 2px solid #000; border-bottom: 2px solid #000;
+  }
+</style>
+</head>
+<body>
+<canvas id="screen"></canvas>
+
+<div id="startNote" hidden>
+  <b>&#9834; TURN YOUR VOLUME UP</b>
+  <span>the demo opens on about 16 seconds of black &mdash; that is how it begins</span>
+</div>
+
+<a id="bbsBtn" href="../" target="_top" title="Back to the menu (or press Q)">&#x25C0; MENU</a>
+<div id="aboutBtn" title="About — how this works">?</div>
+<div id="fsBtn" title="Fullscreen (stretch to fill)">⛶</div>
+<div id="parts" title="Transport: space = play/pause, arrows or 1-9 = jump, J = parts index"></div>
+
+<div id="overlay">
+  <div class="msg">LOADING…</div>
+  <div class="sub">
+    SECOND REALITY<br>
+    Future Crew, Assembly '93 — browser port of the original source<br>
+    music: "UnreaL ][" / Purple Motion
+  </div>
+</div>
+<script>
+  // Arriving at a named part (?part=) or a time (?jump=) means someone asked for
+  // the middle of the demo. The volume note and the intro splash are both about
+  // its BEGINNING, and the assets take long enough to load that they would flash
+  // the start of the demo before the requested part appeared. Retitle the one and
+  // drop the other, here rather than in main.js, because this runs while the page
+  // is still parsing and main.js is a deferred module — by the time boot() got to
+  // it the flash had already happened.
+  (function () {
+    var q = new URLSearchParams(location.search);
+    var want = q.get('part') || q.get('jump');
+    if (!want) return;
+    var note = document.getElementById('startNote');
+    if (note) note.remove();
+    var ov = document.getElementById('overlay');
+    if (!ov) return;
+    var name = String(want).replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+    ov.querySelector('.sub').textContent = name ? 'SEEKING TO ' + name : '';
+  })();
+</script>
+
+<div id="endcard" style="position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#aaa;font-family:'Courier New',monospace;z-index:10;background:transparent;">
+  <div style="font-size:16px;letter-spacing:3px;color:#ddd;">— SECOND REALITY —</div>
+  <div style="font-size:12px;color:#777;">complete loader sequence through MINVBALL · RAYSCRL · 3DSINFLD · JPLOGO · U2E · ENDLOGO · CRED · ENDSCRL</div>
+</div>
+
+<div id="about">
+  <div class="nfo" role="dialog" aria-modal="true" aria-label="About this port">
+    <div class="nfo-bar"><span>■ SECOND.NFO</span><span class="x" id="aboutClose" title="Close (Esc)">X</span></div>
+    <div class="nfo-body">
+      <div class="nfo-title">SECOND REALITY // BROWSER PORT</div>
+      <div class="nfo-sub">the complete browser sequence — what it is &amp; how it was done</div>
+
+      <div class="nfo-rule">╤══════════════════════════════════════════════════════╤</div>
+      <h3>[ WHAT IS THIS ]</h3>
+      <p>A source-driven browser port of the full loader sequence of
+      <b>Second Reality</b>, from "Alkutekstit I" through the final scroller.
+      Built from the original <b>C&nbsp;+&nbsp;x86 assembly</b> source
+      (<code>ALKU/MAIN.C</code> + friends), released into the public domain for
+      the demo's 20th anniversary. It runs the actual program logic, not a
+      lookalike.</p>
+
+      <div class="nfo-rule">╤══════════════════════════════════════════════════════╤</div>
+      <h3>[ WHAT YOU'RE SEEING ]</h3>
+      <p><span class="mg">&gt;</span> <b>Title cards.</b> Three centered messages fade
+      in and out on black — "A Future Crew Production", "First presented at Assembly
+      93", and <span class="cy">"in [Dolby Surround]"</span> (the running gag — those
+      DC-logo glyphs are right there in the FONA font).</p>
+      <p><span class="mg">&gt;</span> <b>Panorama + credits.</b> The wide
+      starfield/mountain painting fades in and scrolls slowly while the credits
+      (Graphics / Music / Code / Additional Design) fade in over the sky and stay
+      fixed on screen as the painting scrolls behind them.</p>
+      <p><span class="mg">&gt;</span> <b>The spaceship.</b> When the scroll runs out,
+      a giant ship sweeps over the camera, escort fighters tumble past, and the
+      fleet recedes to a dot on the horizon — real-time gouraud-shaded 3D
+      ("Alkutekstit II", the VISU engine).</p>
+      <p><span class="mg">&gt;</span> <b>The moon explosion + title.</b> The moon rises
+      over the same landscape, ignites, and detonates into an expanding debris ring
+      that whites out the screen — a 40-frame <code>PRAX4.FLI</code> animation played
+      at one frame per 4 vblanks with a white-blend palette fade (PAM). Out of the
+      white, the <b>SECOND REALITY</b> title painting fades in (BEG).</p>
+      <p><span class="mg">&gt;</span> <b>The glenz vectors.</b> The music switches to
+      the main theme (<code>MUSIC1.S3M</code>, also descrambled live), the wipe tears
+      the title away, the FC pedestal bounces in, and the transparent glenz solid
+      drops onto it — jello physics, XOR span-transition rendering, and dynamic
+      palette-block lighting, all running to the techno beat.</p>
+      <p><span class="mg">&gt;</span> <b>The dot tunnel.</b> Then 77 rings of 64 dots
+      each swallow the camera — Psi's Turbo Pascal part (<code>TUN10.PAS</code>),
+      ring circles and sine sway streamed from the original's precomputed tables
+      (<code>TUNNEL.DAT</code> / <code>SINIT.DAT</code>, shipped verbatim), camera
+      locked to ring 5, erase-and-plot per dot exactly like the inline asm.</p>
+
+      <div class="nfo-rule">╤══════════════════════════════════════════════════════╤</div>
+      <h3>[ HOW IT'S BUILT ]</h3>
+      <p><span class="mg">&gt;</span> <b>Tweaked VGA.</b> The original runs an unchained
+      planar "Mode X" with a 704-pixel-wide virtual canvas and a 320-wide visible
+      window. Here that's a flat chunky indexed framebuffer, presented through a
+      hand-written WebGL2 palette-lookup shader — one triangle, two textures, no
+      library — the GPU acting as the VGA DAC
+      (<span class="gn">index → 6-bit DAC → RGB</span>).</p>
+      <p><span class="mg">&gt;</span> <b>The "copper".</b> The DIS interrupt server did
+      three things each vblank: hardware horizontal scroll (display-start + pixel-pan),
+      palette upload, and an incremental palette-fade accumulator. All reproduced
+      per virtual-frame. The painting itself is drawn <b>vertically doubled</b>, exactly
+      as the original streams it.</p>
+      <p><span class="mg">&gt;</span> <b>Semi-transparent text.</b> A text pixel
+      <i>adds</i> <code>0x40/0x80/0xC0</code> to the background index, landing it in a
+      tinted copy of the palette — so text is a translucent tint that fades purely by
+      animating the palette, no redraw.</p>
+      <p><span class="mg">&gt;</span> <b>The seamless switch.</b> The scroll stops
+      exactly on the panorama's right half — and the 3D scene's background image
+      <i>is</i> that same half (byte-identical, palette-shifted +192). The video
+      mode changes under your nose and not one pixel moves. The ship engine itself
+      is a port of the VISU 3D pipeline: keyframe byte-code &rarr; 1.14 fixed-point
+      matrices &rarr; camera compose &rarr; project (<code>fov 0x2200</code>,
+      y-down) &rarr; back-face cull by normal &rarr; gouraud shade from per-vertex
+      normals &times; light vector &rarr; painter's fill, clipped to rows 25–174.</p>
+
+      <div class="nfo-rule">╤══════════════════════════════════════════════════════╤</div>
+      <h3>[ MUSIC ]</h3>
+      <p>The intro plays <code>MUSIC0.S3M</code> — <span class="cy">"UnreaL ][ - The 2ND
+      Reality"</span>, the slow ~2-minute intro arrangement of Purple Motion's theme.
+      (<code>U2.ASM</code> starts module <b>0</b> for a full run; module 1, the faster
+      variant, is the glenz song.) Its pattern data is <b>XOR-scrambled on disk</b>
+      (Future Crew's anti-rip protection) and ships verbatim — it's descrambled
+      <b>live in the browser</b> with a keystream reconstructed from the scrambled
+      files alone. The eight title/credit cues are timed to the song's
+      <code>dis_sync</code> sections, computed with libopenmpt.</p>
+      <div class="tip">▸ Open DevTools → Console (<b>F12</b>) and reload to watch the
+      music descramble on load: scrambled bytes <span class="mg">XOR</span> keystream =
+      real notes.</div>
+
+      <div class="nfo-rule">╤══════════════════════════════════════════════════════╤</div>
+      <h3>[ MADE BY CLAUDE ]</h3>
+      <p>All of it — reverse-engineering the C&nbsp;+&nbsp;assembly, porting the tweaked
+      VGA + copper + font engine to JavaScript&nbsp;+&nbsp;WebGL, cracking the music
+      protection, and building this page — was done by
+      <span class="mg">Claude&nbsp;Fable&nbsp;5</span>, working only from the raw
+      public-domain source.</p>
+
+      <div class="nfo-foot">
+        Future Crew 1993 · source: public domain (Unlicense)<br>
+        ported to the browser <span class="heart">♥</span> from raw source only, with Claude Fable&nbsp;5
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 90s about panel toggle (kept out of the module so it works pre-load)
+  (function () {
+    var about = document.getElementById('about');
+    var open = function () { about.classList.add('show'); };
+    var close = function () { about.classList.remove('show'); };
+    document.getElementById('aboutBtn').addEventListener('click', open);
+    document.getElementById('aboutClose').addEventListener('click', close);
+    about.addEventListener('click', function (e) { if (e.target === about) close(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+    // fullscreen toggle: main.js stretches the demo over the whole screen
+    // (no letterbox) while fullscreen is active. webkit prefixes for Safari.
+    // The board can fullscreen this whole frame from ITS document — that is how
+    // its [1] opens straight to full screen, since navigating here would spend
+    // the gesture the request needs. This document sees no fullscreen element of
+    // its own in that case, so it gets told; and leaving has to be asked of
+    // whoever entered.
+    var hostFs = false, hostTouch = false;
+    var fsBtn = document.getElementById('fsBtn');
+    var ownFs = function () { return !!(document.fullscreenElement || document.webkitFullscreenElement); };
+    var isFs = function () { return hostFs || ownFs(); };
+    addEventListener('message', function (e) {
+      if (e.origin !== location.origin || !e.data || e.data.sr !== 'fs') return;
+      hostFs = !!e.data.on;
+      hostTouch = !!e.data.touch;
+      // On a phone there is no windowed state worth going back to — the button
+      // is the way out of the demo, so it says so.
+      var leaving = hostFs && hostTouch;
+      fsBtn.textContent = leaving ? '✕' : '⛶';
+      fsBtn.title = leaving ? 'Done — back to the menu' : 'Fullscreen (stretch to fill)';
+      showUI();
+    });
+    fsBtn.addEventListener('click', function () {
+      var doc = document, el = doc.documentElement;
+      if (hostFs) {
+        try { parent.postMessage({ sr: 'fsexit', leave: hostTouch }, location.origin); } catch (err) {}
+        return;
+      }
+      if (ownFs()) (doc.exitFullscreen || doc.webkitExitFullscreen).call(doc);
+      else (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+    });
+    // YouTube-style chrome auto-hide: in fullscreen, fade the controls (and
+    // cursor) after 2s of mouse inactivity; any movement brings them back
+    var hideTimer = null;
+    var showUI = function () {
+      document.body.classList.remove('uihide');
+      if (hideTimer) clearTimeout(hideTimer);
+      hideTimer = null;
+      if (isFs()) hideTimer = setTimeout(function () { document.body.classList.add('uihide'); }, 2000);
+    };
+    document.addEventListener('mousemove', showUI);
+    // A finger produces no mousemove, so the controls would fade out and never
+    // come back. A tap anywhere brings them round, like a video player.
+    document.addEventListener('pointerdown', showUI);
+    document.addEventListener('touchstart', showUI, { passive: true });
+    document.addEventListener('fullscreenchange', showUI);
+    document.addEventListener('webkitfullscreenchange', showUI);
+  })();
+</script>
+<script type="module" src="main.js?v=67"></script>
+</body>
+</html>

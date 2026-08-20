@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>Goodbye — Second Reality</title>
+<meta name="robots" content="noindex"><link rel="stylesheet" href="bbs.css">
+<style>
+  /* Hanging up took a moment and then the screen stopped being someone else's.
+     The carrier line arrives on a timer for that reason and no other. */
+  #carrier { opacity: 0; transition: opacity .25s steps(2); }
+  #carrier.on { opacity: 1; }
+</style></head>
+<body><div class="crt"><div class="body">
+
+<pre id="out" class="grn"></pre>
+<pre id="carrier" class="red">NO CARRIER</pre>
+<p id="after" class="dim" style="opacity:0;transition:opacity 1s"></p>
+
+<div class="menu" id="m" style="opacity:0;transition:opacity 1s"></div>
+</div></div>
+<script type="module">
+import { chrome, menu, session } from './bbs.js';
+const { caller, minutes } = session();
+
+document.getElementById('out').innerHTML =
+`
+  Thank you for calling SECOND REALITY.
+
+  You were caller <span class="wht">#${caller}</span>.
+  Time on system: <span class="wht">${minutes}</span> minute${minutes === 1 ? '' : 's'}.
+  Downloads: <span class="wht">0</span>.  Uploads: <span class="wht">0</span>.  Ratio: <span class="wht">n/a</span>.
+
+  Please call again.
+`;
+
+document.getElementById('m').innerHTML = menu([
+  { key: 'R', file: '/', title: 'Call back',    desc: 'redialling costs nothing now' },
+  { key: '1', file: '?play',  title: 'Run the demo', desc: 'the reason any of this exists' },
+]);
+
+// ATH, then the modem noticing. Reduced-motion callers get it immediately.
+const quick = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const reveal = () => {
+  document.getElementById('carrier').classList.add('on');
+  document.getElementById('after').textContent =
+    'Except you are still here, because the modem was a metaphor and this is a ' +
+    'web page. ESC goes back.';
+  document.getElementById('after').style.opacity = '1';
+  document.getElementById('m').style.opacity = '1';
+};
+quick ? reveal() : setTimeout(reveal, 1400);
+
+chrome({ title: 'Logged off' });
+</script></body></html>

@@ -1,0 +1,9 @@
+{
+  "name": "shot-harness",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Headless Playwright screenshot + console harness for the port",
+  "dependencies": {
+    "playwright": "^1.47.0"
+  }
+}

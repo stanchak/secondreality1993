@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>What it wanted from your PC — Second Reality</title>
+<meta name="robots" content="noindex"><link rel="stylesheet" href="bbs.css"></head>
+<body><div class="crt"><div class="body">
+
+<p class="yel">WHAT IT WANTED FROM YOUR PC</p>
+
+<p>From README.1ST, 1993:</p>
+
+<pre>  <span class="cyn">processor</span>  80386. “If your machine is 386-based, the demo will work,
+             but many parts slow down and the demo simply looks worse.”
+             A 486 and a fast VGA card were what they recommended.
+  <span class="cyn">memory</span>     570,000 bytes of free conventional memory — out of the
+             655,360 DOS gave you, so a lean CONFIG.SYS was assumed
+  <span class="cyn">EMS</span>        1 MB, for Sound Blaster and SB Pro. None needed for the
+             Gravis UltraSound, or with the sound switched off
+  <span class="cyn">sound</span>      SB, SB Pro, GUS — picked from a SETUP screen</pre>
+
+<p>It could also start from five places, which is where this board’s parts index
+gets the idea:</p>
+
+<pre>  <span class="grn">SECOND</span>    from the beginning     <span class="grn">SECOND 3</span>  the landscape scroller
+  <span class="grn">SECOND 2</span>  the title screen       <span class="grn">SECOND 4</span>  the vector part
+                                  <span class="grn">SECOND 5</span>  the end credits</pre>
+
+<p>And a Loop option, “for example at a computer exhibition”, which skips the end
+scroller and restarts after the credits. <span class="dim">There is a sixth start
+point the README does not list — see /u.</span></p>
+
+<div class="menu" id="m"></div>
+</div></div>
+<script type="module">
+import { chrome, menu, setStatus } from './bbs.js';
+document.getElementById('m').innerHTML = menu([
+  { key: 'A', file: 'hidden-part.html', title: 'The sixth start point', desc: 'SECOND U' },
+]);
+chrome({ title: 'Hardware, 1993' });
+setStatus('386 · 570,000 BYTES FREE · 1 MB EMS');
+</script></body></html>

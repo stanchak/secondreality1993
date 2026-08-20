@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>Verification — Second Reality</title><meta name="description" content="Nine deterministic validators drive the port's own modules and check them against a second, independent reading of the 1993 source.">
+<link rel="canonical" href="https://www.secondreality1993.com/tech-verify.html">
+<meta property="og:title" content="How it is verified — Second Reality by Future Crew">
+<meta property="og:description" content="Nine deterministic validators drive the port's own modules and check them against a second, independent reading of the 1993 source.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.secondreality1993.com/tech-verify.html">
+<meta property="og:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY.">
+<meta property="og:site_name" content="Second Reality">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How it is verified — Second Reality by Future Crew">
+<meta name="twitter:description" content="Nine deterministic validators drive the port's own modules and check them against a second, independent reading of the 1993 source.">
+<meta name="twitter:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta name="twitter:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY.">
+<link rel="stylesheet" href="bbs.css"></head>
+<body><div class="crt"><div class="body">
+
+<p class="yel">HOW IT IS VERIFIED</p>
+
+<p>Nine deterministic validators drive the real modules headlessly and assert on
+structure rather than screenshots:</p>
+
+<pre>  · exact frame counts and phase chains for every part
+  · byte hashes of every extracted asset against the release
+  · bit-exact reproduction of the original’s arithmetic, including
+    its Microsoft C random number generator
+  · each music gate re-derived from the S3M itself
+  · transitions that should be seamless are pixel-diffed across the
+    boundary and must come out at zero
+  · the hidden part’s mirror: its bottom half must equal its top
+    half from exactly 32 frames earlier, flipped</pre>
+
+<p>Every one of those runs silent, so there is one more that plays real audio and
+measures the visual clock against the audio engine’s reported position — the only
+check that can see audio/visual drift.</p>
+
+<p class="grn">WHAT IS ACTUALLY UNDER TEST</p>
+<p>The port’s part modules touch <b>no DOM at all</b> — not one reference to
+<span class="cyn">document</span> or <span class="cyn">window</span> between them.
+The host module owns the screen, the clock and the phase machine; a part is pure
+arithmetic over a byte array. So a validator does not test a copy or a harness
+rebuild of the part:</p>
+
+<pre>  globalThis.fetch = async url =&gt; readFromDisk(url);
+  const m = await import(‘../panic.js’);</pre>
+
+<p>The one browser thing a part does use is <span class="cyn">fetch()</span>, to pull
+its own assets — so the validator points that at the filesystem, and imports. What
+runs under test is <b>the same file the browser runs</b>. There is no test build, and
+nothing to keep in sync.</p>
+
+<p class="grn">AND WHAT IT IS CHECKED AGAINST</p>
+<p>Not the port’s own earlier output, which would only prove it had not changed. The
+oracle is written <i>inside</i> the validator: an independent transcription of the
+original C or assembly, done from the source a second time. <span class="cyn">
+validate_panic.mjs</span> transcribes <span class="cyn">SHUTDOWN.C</span> in VGA byte
+addresses — 65536 addresses across 4 planes, <span class="cyn">rep movsw</span> as it
+actually moved, plus a CRTC fetch model built from <span class="cyn">TWEAK.ASM</span>
+— and then requires <b>every frame, 0 to 130, to match the port exactly</b>.</p>
+
+<p>Two independent readings of the same 1993 source have to agree byte for byte, or
+one of them is wrong. That is the whole idea, and it is why the checks assert on
+structure instead of screenshots.</p>
+
+<p class="dim">Run them with <span class="cyn">node tools/validate_*.mjs</span> from
+<span class="cyn">unreal2/</span>.</p>
+
+<div class="menu" id="m"></div>
+</div></div>
+<script type="module">
+import { chrome, menu } from './bbs.js';
+document.getElementById('m').innerHTML = menu([
+  { key: '7', file: 'tech.html', title: 'How the port works', desc: 'back to the section' },
+]);
+chrome({ title: 'Verification' });
+</script></body></html>

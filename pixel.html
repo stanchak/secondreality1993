@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>PXL SUX — Second Reality</title>
+<meta name="robots" content="noindex"><link rel="stylesheet" href="bbs.css"></head>
+<body><div class="crt"><div class="body">
+
+<p class="yel">PART PIC MISSING (PXL SUX)</p>
+
+<div class="cols">
+  <figure>
+    <img class="art" src="img/art/cred-placeholder.png" alt="A hand-scrawled red and blue placeholder reading PART PIC MISSING (PXL SUX)" style="width:100%;max-height:30vh;object-fit:contain">
+    <figcaption>CREDITS/INCLUDE.OBJ — the development build</figcaption>
+  </figure>
+  <figure>
+    <img class="art" src="img/art/cred-ship.png" alt="Blue satellites over a grey moonscape" style="width:100%;max-height:30vh;object-fit:contain">
+    <figcaption>MAIN/DATA/CRED.EXE — what shipped</figcaption>
+  </figure>
+</div>
+
+<p>Somebody needed a picture for credits screen 2 and it was not ready, so they
+drew this instead and left it in the build, with a note about whose fault it was.
+Pixel painted most of the demo's art. The parenthetical is presumably from a
+colleague.</p>
+
+<p>It survived because the pictures are <b>linked into the executable</b>, so the
+release's development objects still hold whatever was in that slot the day they
+were assembled. Seven of the 21 credits pictures are like this — the finished art
+was inside the shipped CRED.EXE the whole time.</p>
+
+<div class="menu" id="m"></div>
+</div></div>
+<script type="module">
+import { chrome, menu } from './bbs.js';
+document.getElementById('m').innerHTML = menu([
+  { key: 'X', file: 'hidden.html', title: 'The other hidden screens', desc: 'six more' },
+]);
+chrome({ title: 'PXL SUX' });
+</script></body></html>

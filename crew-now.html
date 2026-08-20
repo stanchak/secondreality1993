@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Second Reality">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>Where Future Crew are now — Second Reality</title>
+<meta name="description" content="What happened after Second Reality: Purple Motion, Pixel, Skaven, Gore, Trug and Abyss — portraits and what they did next.">
+<link rel="canonical" href="https://www.secondreality1993.com/crew-now.html">
+<meta property="og:title" content="Where Future Crew are now — Second Reality">
+<meta property="og:description" content="What happened after Second Reality: Purple Motion, Pixel, Skaven, Gore, Trug and Abyss — portraits and what they did next.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.secondreality1993.com/crew-now.html">
+<meta property="og:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY.">
+<meta property="og:site_name" content="Second Reality">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Where Future Crew are now — Second Reality">
+<meta name="twitter:description" content="What happened after Second Reality: Purple Motion, Pixel, Skaven, Gore, Trug and Abyss — portraits and what they did next.">
+<meta name="twitter:image" content="https://www.secondreality1993.com/img/og-second-reality.jpg">
+<meta name="twitter:image:alt" content="Second Reality's title screen: Future Crew's blue pixel-art creature standing between the words SECOND and REALITY."><link rel="stylesheet" href="bbs.css"></head>
+<body><div class="crt"><div class="body">
+
+<h1 class="yel">WHERE THEY ARE NOW</h1>
+
+<div id="frame"></div>
+
+<div class="menu" id="m"></div>
+</div></div>
+<script type="module">
+import { chrome, menu } from './bbs.js';
+
+const PICS = [
+  ['jonne-valtonen', 'portrait',
+   'PURPLE MOTION — Jonne Valtonen',
+   'Wrote this demo’s music at 17. Now an orchestral composer: London Symphony, Tokyo Philharmonic, Sydney Opera House — Final Fantasy, Zelda, Mario, Metal Gear, Castlevania.',
+   'Jonne Valtonen. Self-published, Wikimedia Commons, GFDL 1.2+',
+   'Portrait of Jonne Valtonen', 'ValtonenJonne'],
+  ['misko-iho', 'portrait',
+   'PIXEL — Misko Iho',
+   'Painted most of this demo’s art. Then Epic Pinball graphics, music videos (Darude, Chisu, Haloo Helsinki!) and commercials for Disney, Lidl and Flonase.',
+   'Misko Iho, 2021. Self-published, Wikimedia Commons, CC0',
+   'Portrait of Misko Iho in 2021', 'MiskoIho'],
+  ['peter-hajba', 'portrait',
+   'SKAVEN — Peter Hajba',
+   'Music and graphics. Wrote tracks for Unreal Tournament (1999). At Remedy since Max Payne: sound design, animation, textures, particles.',
+   'Peter Hajba at his studio, via Bitfellas Zine #13',
+   'Peter Hajba at his studio desk', 'skaven252'],
+  ['samuli-syvahuoko', 'portrait',
+   'GORE — Samuli Syvähuoko',
+   'Organised the group. Co-founded Remedy in 1995 and ran it until 2000, then Fathammer, Recoil, Helsinki GameWorks. Now founding partner at Sisu Game Ventures.',
+   'Samuli Syvähuoko, via sisu.vc',
+   'Portrait of Samuli Syvähuoko', ''],
+  ['mika-tuomi', 'portrait',
+   'TRUG — Mika Tuomi',
+   'Coded parts of this demo. The making-of video was shot at his parents’ house near Pori a week before Assembly ’93, and he published it himself.',
+   'Mika Tuomi, via his X account',
+   'Mika Tuomi in front of cherry blossoms', 'mtuomi'],
+  ['jussi-laakkonen', 'portrait',
+   'ABYSS — Jussi Laakkonen',
+   'BBS and PR, then Assembly Organizing. Co-founded Applifier (sold to Unity; he ran Unity Ads), later Noice. On stage at Slush.',
+   'Jussi Laakkonen at Slush, Builders’ Studio #22',
+   'Jussi Laakkonen speaking on stage at Slush', 'jussil'],
+];
+let i = 0;
+const frame = document.getElementById('frame');
+function show() {
+  const [f, kind, name, bio, credit, alt, x] = PICS[i];
+  const imgClass = kind === 'portrait' ? 'art portrait' : 'art';
+  const imgStyle = kind === 'portrait' ? '' : ' style="max-width:100%;max-height:42vh"';
+  frame.innerHTML =
+    `<div class="cols"><div>` +
+    `<img class="${imgClass}" src="img/people/${f}.jpg" alt="${alt}"${imgStyle}>` +
+    `<p class="dim" style="font-size:0.8em">${credit}</p>` +
+    `</div><div>` +
+    `<p><span class="cyn">${name.split(' — ')[0]}</span> — ${name.split(' — ')[1]}` +
+    (x ? ` · <a href="https://x.com/${x}">@${x}</a>` : '') + `</p>` +
+    `<p>${bio}</p>` +
+    `<p class="dim">${i + 1}/${PICS.length}</p>` +
+    `</div></div>`;
+}
+document.getElementById('m').innerHTML = menu([
+  { key: 'N', file: '#', title: 'Next member', desc: 'or press → ' },
+  { key: 'P', file: '#', title: 'Previous',    desc: 'or press ←' },
+  { key: 'C', file: 'crew-then.html', title: 'They founded Remedy', desc: '1997, making Max Payne' },
+]);
+show();
+chrome({ title: 'Where they are now', reserve: ['n', 'p', 'ArrowLeft', 'ArrowRight'] });
+addEventListener('keydown', e => {
+  if (e.key === 'n' || e.key === 'N' || e.key === 'ArrowRight') { i = (i + 1) % PICS.length; show(); }
+  if (e.key === 'p' || e.key === 'P' || e.key === 'ArrowLeft')  { i = (i + PICS.length - 1) % PICS.length; show(); }
+});
+document.querySelectorAll('.menu a').forEach(a => a.addEventListener('click', e => {
+  if (a.dataset.key === 'C') return;
+  e.preventDefault();
+  i = (a.dataset.key === 'N' ? i + 1 : i + PICS.length - 1) % PICS.length; show();
+}));
+</script></body></html>
